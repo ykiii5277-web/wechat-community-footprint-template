@@ -1,0 +1,50 @@
+.profile-page {
+  padding-right:28rpx;
+  padding-bottom:calc(230rpx + env(safe-area-inset-bottom));
+  padding-left:28rpx;
+}
+
+/* 头像区直接叠放足迹地图，山景在所有设备上都会作为独立图片层显示。 */
+.profile-hero { position:relative; overflow:hidden; height:500rpx; margin:3rpx -28rpx 0; background:#EEF1E8; text-align:center; }
+.profile-hero-scene { position:absolute; z-index:0; top:0; left:0; display:block; width:100%; height:auto; opacity:.96; }
+.profile-hero-veil { position:absolute; z-index:1; inset:0; background:linear-gradient(180deg,rgba(255,252,246,.14),rgba(248,247,238,.22) 52%,rgba(255,252,246,.78)); }
+.profile-foreground { position:absolute; z-index:2; inset:0; transform:translateY(80rpx); }
+.hero-wash { position:absolute; z-index:2; width:540rpx; height:260rpx; left:-80rpx; bottom:-130rpx; border-radius:50%; background:rgba(255,252,246,.42); }
+.my-avatar { position:relative; z-index:4; box-sizing:border-box; overflow:hidden; width:125rpx; height:125rpx; margin:55rpx auto 10rpx; border:5rpx solid #FFF9ED; border-radius:50%; background:#DDE7D7; box-shadow:0 7rpx 18rpx rgba(42,75,57,.18); }
+.my-avatar-image { display:block; width:100%; height:100%; transform-origin:center; }
+.my-name { position:relative; z-index:5; color:#1F513E; font-family:"Songti SC",SimSun,serif; font-size:40rpx; font-weight:700; text-shadow:0 1rpx 5rpx rgba(255,255,255,.94); }
+.my-name-empty { color:#406A52; font-size:31rpx; font-weight:400; }
+.profile-meta { position:relative; z-index:5; display:inline-flex; flex-direction:column; align-items:center; min-width:270rpx; margin-top:9rpx; padding:8rpx 20rpx 9rpx; border:1rpx solid rgba(66,111,81,.28); border-radius:18rpx; background:rgba(255,252,246,.84); box-shadow:0 5rpx 15rpx rgba(42,75,57,.13); }
+.my-uid { color:#295741; font-size:21rpx; font-weight:700; letter-spacing:1rpx; text-shadow:0 1rpx 3rpx rgba(255,255,255,.72); }
+.my-stats { margin-top:3rpx; color:#52705E; font-size:22rpx; font-weight:600; text-shadow:0 1rpx 3rpx rgba(255,255,255,.72); }
+.hero-hills { position:absolute; z-index:3; left:-40rpx; right:-40rpx; bottom:-125rpx; height:260rpx; border-radius:50%; background:rgba(255,252,246,.75); }
+
+/* 缩小与头图区的负重叠，给 UID 和经历信息保留完整可读空间。 */
+.received-panel { position:relative; z-index:7; margin:-45rpx 0 18rpx; padding:17rpx 66rpx 17rpx 19rpx; }
+.received-title { color:#2A4B39; font-size:23rpx; font-weight:700; }
+.received-items { display:grid; grid-template-columns:repeat(4,1fr); gap:8rpx; margin-top:12rpx; }
+.received-item { display:grid; grid-template-columns:34rpx 1fr; align-items:center; column-gap:6rpx; color:#607469; font-size:18rpx; }
+.received-item image { grid-row:1/3; width:34rpx; height:34rpx; border-radius:9rpx; }
+.received-item text { color:#A66E20; font-size:20rpx; font-weight:700; }
+.received-heading { display:flex; align-items:center; justify-content:space-between; gap:16rpx; }
+.other-gifts-button { position:absolute; top:15rpx; right:11rpx; display:flex; width:43rpx; height:112rpx; box-sizing:border-box; flex-direction:column; align-items:center; justify-content:center; padding:5rpx 4rpx; border:1rpx solid rgba(31,112,91,.28); border-radius:16rpx; color:#fff; background:#43A68F; box-shadow:0 4rpx 10rpx rgba(40,120,98,.18); font-size:18rpx; }
+.other-gifts-label { display:flex; flex-direction:column; align-items:center; line-height:1.03; text-align:center; }.other-gifts-label text { display:block; }.other-gifts-arrow { margin-top:4rpx; font-size:17rpx; line-height:1; }
+.primary-gifts { grid-template-columns:repeat(4,1fr); }.other-gift-items { grid-template-columns:repeat(3,1fr); }
+.other-gifts { margin-top:13rpx; padding-top:13rpx; border-top:1rpx solid rgba(49,94,74,.12); }
+.other-gifts-empty { padding:8rpx 0 3rpx; color:#8B958E; font-size:21rpx; text-align:center; }
+.profile-menu { position:relative; z-index:6; margin-top:0; }
+.menu-card { display:flex; align-items:center; padding:23rpx; margin-bottom:19rpx; }
+.menu-icon { display:flex; align-items:center; justify-content:center; width:80rpx; height:80rpx; margin-right:21rpx; border-radius:50%; font-size:39rpx; }
+.intro-icon { color:#4F7457; background:#E7EEDB; }
+.favorites-icon { color:#9A6A19; background:#F9EBCF; }
+.backpack-icon { color:#4D7190; background:#E6EEF3; }
+.task-icon { color:#4B7354; background:#E6F0E1; }
+.shop-icon { color:#A46917; background:#FFF0D2; }
+.mail-icon { color:#8A5F47; background:#F4E9E0; }
+.admin-icon { color:#FFF9EA; background:linear-gradient(145deg,#9B6C20,#D6A54A); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
+.settings-icon { color:#F7FFFB; background:linear-gradient(145deg,#3D836D,#66AA92); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
+.developer-icon { color:#315E4A; background:linear-gradient(145deg,#E3EFE4,#F7EDD8); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
+.menu-copy { flex:1; color:#20362C; font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
+.menu-copy text { display:block; margin-top:4rpx; color:#718078; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; font-size:21rpx; font-weight:400; }
+.menu-arrow { color:#1F513E; font-size:50rpx; }
+.menu-notice { box-sizing:border-box; min-width:35rpx; height:35rpx; margin:0 8rpx; padding:0 7rpx; border:3rpx solid #FFFDF8; border-radius:99rpx; color:#fff; background:#D95548; box-shadow:0 3rpx 8rpx rgba(191,63,51,.22); font-size:18rpx; font-weight:700; line-height:29rpx; text-align:center; }

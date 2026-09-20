@@ -1,0 +1,20 @@
+<view class="fun-page">
+  <!-- 固定水彩背景：保留顶部山景，下面是无装饰的纸张留白，便于展示榜单内容。 -->
+  <image class="fun-page-background" src="/assets/images/fun-page-watercolor-clean-v2.jpg" mode="scaleToFill"></image>
+  <view class="safe-top"></view>
+  <view class="fun-heading"><view class="page-title">动态</view><view class="page-subtitle">看看哪些记忆，正在被更多人看见</view></view>
+
+  <!-- 搜索仅在提交时生效，避免输入过程反复刷新榜单。 -->
+  <view class="heat-rule card search-box"><text class="search-icon">⌕</text><input class="search-input" value="{{searchText}}" placeholder="搜索公开内容" placeholder-class="search-placeholder" confirm-type="search" bindinput="searchInput" bindconfirm="search"></input><view wx:if="{{searchText}}" class="search-clear tap" bindtap="clearSearch">×</view><view class="search-submit tap" bindtap="search">搜索</view></view>
+  <view class="range-tabs"><view wx:for="{{periods}}" wx:key="id" class="range-tab tap {{activeRange === item.id ? 'active' : ''}}" data-range="{{item.id}}" bindtap="chooseRange">{{item.name}}</view></view>
+  <view class="rank-filters card"><picker wx:if="{{activeRange === 'month' || activeRange === 'year'}}" range="{{years}}" value="{{yearIndex}}" bindchange="yearChange"><view class="filter-picker">{{selectedYear}} 年 <text>⌄</text></view></picker><picker wx:if="{{activeRange === 'month'}}" range="{{monthLabels}}" value="{{monthIndex}}" bindchange="monthChange"><view class="filter-picker">{{selectedMonth}} 月 <text>⌄</text></view></picker><picker range="{{campOptions}}" range-key="name" value="{{campIndex}}" bindchange="campChange"><view class="filter-picker">{{campName}} <text>⌄</text></view></picker></view>
+  <view class="kind-tabs"><view wx:for="{{contentTypes}}" wx:key="id" class="kind-tab tap {{activeKind === item.id ? 'active' : ''}}" data-kind="{{item.id}}" bindtap="chooseKind">{{item.name}}</view></view>
+
+  <view class="ranking-heading"><view><view class="ranking-title">{{activeRange === 'latest' ? '最新发布' : '热度排行榜'}}</view><view class="ranking-note">{{rangeNote}}</view></view><view class="ranking-heading-actions"><view class="ranking-reward-guide tap" bindtap="showRewardGuide">奖励说明</view><view class="ranking-count">{{total}} 条</view></view></view>
+  <view wx:if="{{items.length}}" class="ranking-list"><view wx:for="{{items}}" wx:key="id" wx:for-item="item" class="ranking-card card tap" data-index="{{index}}" data-id="{{item.id}}" data-kind="{{item.kind}}" data-owner-uid="{{item.ownerUid}}" data-record-id="{{item.recordId}}" bindtap="openItem"><view class="rank-number rank-{{item.rank}}">{{item.rank}}</view><view class="rank-art art-{{item.kind}}"><image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill"></image><text wx:else>{{item.kind === 'photo' ? '▧' : item.kind === 'growth' ? '✎' : '▤'}}</text></view><view class="rank-copy"><view class="rank-title-row"><view class="rank-title">{{item.title}}</view><text class="kind-pill kind-{{item.kind}}">{{item.kindLabel}}</text></view><view class="rank-summary">{{item.summary}}</view><view class="rank-meta">{{item.date}}　👁 {{item.views}}　♥ {{item.likes}}</view></view><view class="heat-score"><text>热度</text><view>{{item.heat}}</view></view></view></view>
+  <view wx:else class="fun-empty"><view>这个时间范围还没有公开内容。</view><view>将相册、记录或作品设为“公开”后，</view><view>才会进入热度榜。</view></view>
+  <view wx:if="{{items.length}}" class="page-actions"><view class="page-button tap {{hasPrevious ? '' : 'disabled'}}" bindtap="previousPage">‹ 上一页</view><view class="page-number">第 {{page}} 页</view><view class="page-button tap {{hasNext ? '' : 'disabled'}}" bindtap="nextPage">下一页 ›</view></view>
+  <view class="rank-footnote">榜单仅统计已被自己选择“公开”的相册、记录和作品。</view>
+
+  <view wx:if="{{showProfileGuide}}" class="profile-guide-mask"><view class="profile-guide-card"><view class="profile-guide-leaf">✦</view><view class="profile-guide-title">欢迎来到<text>同行足迹</text></view><view class="profile-guide-copy">先完善头像、昵称和简介，让同行的朋友更好地认识你吧。</view><view class="profile-guide-note">也可以暂时跳过，稍后在“我的—简介”中编辑。</view><view class="profile-guide-actions"><view class="guide-skip tap" bindtap="guideSkip">暂时跳过</view><view class="guide-confirm tap" bindtap="guideEdit">去编辑</view></view></view></view>
+</view>

@@ -1,0 +1,35 @@
+.settings-page { padding-bottom:70rpx; }
+.privacy-card { display:flex; align-items:center; gap:18rpx; padding:25rpx 23rpx; margin-top:12rpx; }
+.privacy-mark { display:flex; flex:0 0 70rpx; width:70rpx; height:70rpx; align-items:center; justify-content:center; border-radius:50%; color:#fff; background:linear-gradient(145deg,#2E765F,#61A38B); font-family:"Songti SC",SimSun,serif; font-size:30rpx; font-weight:700; }
+.privacy-copy { flex:1; min-width:0; }
+.privacy-title { color:#244936; font-size:29rpx; font-weight:700; }
+.privacy-copy text { display:block; margin-top:4rpx; color:#75857C; font-size:21rpx; }
+.privacy-open { padding:10rpx 18rpx; border:1rpx solid #65A28A; border-radius:99rpx; color:#24624E; background:#EEF7F1; font-size:22rpx; }
+.updated-tip { margin:19rpx 4rpx 13rpx; color:#89948D; font-size:20rpx; text-align:right; }
+.policy-card { overflow:hidden; margin-bottom:16rpx; }
+.policy-head { display:flex; min-height:92rpx; align-items:center; padding:19rpx 23rpx; }
+.policy-copy { flex:1; color:#254836; font-family:"Songti SC",SimSun,serif; font-size:29rpx; font-weight:700; }
+.policy-copy text { display:block; margin-top:3rpx; color:#76837B; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; font-size:21rpx; font-weight:400; }
+.policy-arrow { margin-left:15rpx; color:#3A755F; font-size:31rpx; }
+.policy-body { padding:3rpx 25rpx 24rpx; border-top:1rpx solid rgba(44,92,69,.09); }
+.policy-paragraph { margin-top:19rpx; color:#455B50; font-size:25rpx; line-height:1.8; text-align:justify; text-indent:2em; }
+.rights-actions { margin-top:26rpx; padding:25rpx; }
+.action-title { color:#244936; font-size:29rpx; font-weight:700; }
+.action-hint { margin:8rpx 0 22rpx; color:#748279; font-size:22rpx; line-height:1.65; }
+.contact-button,.delete-button { width:100%; margin-top:14rpx; border-radius:99rpx; font-size:25rpx; line-height:2.7; }
+.contact-button { color:#fff; background:#286B55; }
+.delete-button { color:#9C493E; background:#FFF4F0; border:1rpx solid #E9BDB4; }
+.contact-button::after,.delete-button::after { border:0; }
+.feedback-mask { position:fixed; z-index:99; inset:0; display:flex; align-items:center; justify-content:center; padding:34rpx; background:rgba(19,35,28,.52); }
+.feedback-dialog { width:100%; box-sizing:border-box; padding:30rpx 26rpx 24rpx; border-radius:25rpx; background:#FFFCF6; box-shadow:0 20rpx 60rpx rgba(16,35,26,.28); }
+.feedback-title { color:#234B38; font-family:"Songti SC",SimSun,serif; font-size:34rpx; font-weight:700; text-align:center; }
+.feedback-subtitle { margin-top:6rpx; color:#77867D; font-size:22rpx; text-align:center; }
+.feedback-input { width:100%; height:260rpx; box-sizing:border-box; margin-top:23rpx; padding:20rpx; border:1rpx solid #D7E3DA; border-radius:16rpx; color:#263D32; background:#F8F8F1; font-size:25rpx; line-height:1.65; }
+.feedback-meta { display:flex; align-items:flex-start; justify-content:space-between; gap:16rpx; margin-top:10rpx; color:#8A958E; font-size:19rpx; line-height:1.5; }
+.feedback-meta text:first-child { flex:1; }
+.feedback-meta text:last-child { flex:0 0 auto; }
+.feedback-actions { display:grid; grid-template-columns:1fr 1fr; gap:18rpx; margin-top:23rpx; }
+.feedback-cancel,.feedback-send { width:100%; border-radius:99rpx; font-size:25rpx; line-height:2.65; }
+.feedback-cancel { color:#53675C; background:#EDF1EC; }
+.feedback-send { color:#fff; background:#286B55; }
+.feedback-cancel::after,.feedback-send::after { border:0; }

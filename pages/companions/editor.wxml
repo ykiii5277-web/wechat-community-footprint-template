@@ -1,0 +1,32 @@
+<view class="page-shell companion-editor">
+  <page-nav title="{{id ? '编辑伙伴' : '添加伙伴'}}"></page-nav>
+  <view class="editor-card card">
+    <!-- 人物照片完全选填；没上传时会沿用伙伴列表中的默认插画头像。 -->
+    <view class="field-label">人物照片（选填）</view>
+    <view wx:if="{{avatar}}" class="avatar-crop-area">
+      <!-- 全屏裁切完成后会生成头像成品，所有页面直接显示同一张图片。 -->
+      <view class="avatar-crop-circle tap" bindtap="editAvatar">
+        <image class="avatar-crop-image" src="{{avatar}}" mode="aspectFill" style="transform: translate({{avatarOffsetX}}rpx, {{avatarOffsetY}}rpx) scale({{avatarScale}});"></image>
+      </view>
+      <view class="crop-tip">点击头像进入全屏编辑，可拖动位置并双指缩放。</view>
+      <view class="avatar-photo-actions"><view class="mini-photo-button tap" bindtap="editAvatar">全屏调整</view><view class="mini-photo-button secondary tap" bindtap="chooseAvatar">更换照片</view><view class="clear-avatar tap" bindtap="clearAvatar">移除照片</view></view>
+    </view>
+    <view wx:else class="avatar-picker tap" bindtap="chooseAvatar">
+      <view class="avatar-plus">＋</view>
+      <view>从相册选择人物照片</view>
+    </view>
+    <view class="field-label">姓名</view>
+    <input class="text-input" placeholder="例如：小凯" maxlength="16" value="{{name}}" data-field="name" bindinput="input"/>
+    <view class="field-label">性别</view>
+    <picker mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="genderChange"><view class="picker-field">{{genderName}} <text>›</text></view></picker>
+    <view class="field-label">介绍 / 评价</view>
+    <textarea class="body-input" placeholder="你想怎样介绍这位伙伴？" maxlength="240" value="{{introduction}}" data-field="introduction" bindinput="input" auto-height="{{true}}"/>
+    <view class="field-label">印象 / 故事</view>
+    <textarea class="body-input" placeholder="写下一段共同经历或印象……" maxlength="500" value="{{story}}" data-field="story" bindinput="input" auto-height="{{true}}"/>
+    <view class="field-label">可见范围</view>
+    <picker mode="selector" range="{{visibilityOptions}}" range-key="name" value="{{visibilityIndex}}" bindchange="visibilityChange"><view class="picker-field">{{visibilityName}} <text>›</text></view></picker>
+    <view class="visibility-hint">{{visibilityHint}}</view>
+  </view>
+  <view class="editor-actions"><button wx:if="{{id}}" class="delete-button" bindtap="remove">删除</button><button class="btn-primary save-button" bindtap="save">保存伙伴</button></view>
+</view>
+<avatar-cropper visible="{{avatarCropVisible}}" source="{{avatarCropSource}}" initial-scale="{{avatarCropScale}}" initial-offset-x="{{avatarCropOffsetX}}" initial-offset-y="{{avatarCropOffsetY}}" bind:cancel="avatarCropCancel" bind:complete="avatarCropComplete"></avatar-cropper>

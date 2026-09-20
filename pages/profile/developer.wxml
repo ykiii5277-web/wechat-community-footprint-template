@@ -1,0 +1,27 @@
+<view class="page-shell developer-page">
+  <page-nav title="关于模板" subtitle="八个部分，了解模板能力与部署要求"></page-nav>
+
+  <view class="article-lead">
+    <view class="lead-kicker">开始二次开发之前</view>
+    <view class="lead-title">把同行的故事交给你来定义</view>
+  </view>
+
+  <view class="section-list">
+    <view wx:for="{{sections}}" wx:key="button" wx:for-item="section" wx:for-index="sectionIndex" class="section-card {{section.expanded ? 'is-expanded' : ''}}">
+      <view class="section-trigger tap" data-index="{{sectionIndex}}" bindtap="toggleSection" aria-label="{{section.expanded ? '收起' : '展开'}}{{section.button}}">
+        <view class="section-button">{{section.button}}</view>
+        <view class="section-summary">
+          <view class="section-number">第 {{section.number}} 幕</view>
+          <view class="section-hint">{{section.expanded ? '正文已展开，再次点击收起' : section.title}}</view>
+        </view>
+        <view class="section-chevron">{{section.expanded ? '⌃' : '⌄'}}</view>
+      </view>
+
+      <view wx:if="{{section.expanded}}" class="section-content">
+        <view class="article-title">{{section.title}}</view>
+        <view wx:for="{{section.paragraphs}}" wx:key="index" wx:for-item="paragraph" class="article-paragraph">{{paragraph}}</view>
+        <view wx:if="{{section.signature}}" class="article-signature">{{section.signature}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,30 @@
+.friend-content { padding-left:28rpx; padding-right:28rpx; }.intro-card { padding:29rpx; }.intro-name,.record-title { color:#20362C; font-family:"Songti SC",SimSun,serif; font-size:38rpx; font-weight:700; }.intro-bio { white-space:pre-wrap; margin-top:20rpx; color:#50665A; font-size:27rpx; line-height:1.9; }.empty-text { margin-top:18rpx; color:#93A097; font-size:24rpx; }.intro-tags { display:flex; flex-wrap:wrap; gap:10rpx; margin-top:21rpx; }.intro-tags text { padding:8rpx 16rpx; border-radius:99rpx; color:#52705D; background:#E7F0E5; font-size:21rpx; }.friend-camps,.record-list { display:flex; flex-direction:column; gap:18rpx; }.friend-camp { overflow:hidden; }.friend-camp scene-banner { display:block; }.friend-camp-copy { padding:19rpx 22rpx; color:#234837; font-family:"Songti SC",SimSun,serif; font-size:30rpx; font-weight:700; }.friend-camp-copy text { display:block; margin-top:4rpx; color:#7F8E84; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; font-size:20rpx; font-weight:400; }.record-card { padding:25rpx; }.record-label { display:inline-block; margin-bottom:8rpx; padding:3rpx 11rpx; border-radius:99rpx; color:#56715F; background:#E9F0E7; font-size:19rpx; }.record-date { margin-top:6rpx; color:#829087; font-size:20rpx; }.record-body { margin-top:16rpx; color:#52665B; font-size:25rpx; line-height:1.75; white-space:pre-wrap; }
+.friend-content-section { margin-top:24rpx; }.friend-content-image { display:block; width:100%; height:240rpx; margin:-25rpx -25rpx 19rpx; width:calc(100% + 50rpx); }
+.friend-footprint-guide { margin-bottom:18rpx; padding:19rpx 21rpx; border:1rpx solid rgba(54,101,76,.12); border-radius:18rpx; color:#526F5D; background:#EDF4EA; font-size:22rpx; line-height:1.65; }.friend-camp { position:relative; }.camp-content-notice { position:absolute; z-index:3; top:11rpx; right:11rpx; display:flex; align-items:center; justify-content:center; width:32rpx; height:32rpx; border:3rpx solid #fff; border-radius:50%; color:#fff; background:#D8584D; font-size:21rpx; font-weight:700; }.friend-camp-copy { position:relative; }.friend-camp-arrow { position:absolute; right:20rpx; top:18rpx; color:#315F49; font-family:sans-serif; font-size:45rpx; }
+
+/* 好友简介复用“关于我”的信息层级，但不提供编辑入口。 */
+.friend-intro-hero { overflow:hidden; margin-top:4rpx; border-radius:24rpx; box-shadow:0 12rpx 28rpx rgba(39,70,52,.10); }
+.friend-intro-hero scene-banner { display:block; }
+.friend-identity-card { margin:20rpx 0; padding:21rpx; border:1rpx solid rgba(255,255,255,.88); }
+.friend-identity-primary { display:flex; align-items:center; }
+.friend-intro-avatar { display:flex; align-items:center; justify-content:center; flex:0 0 112rpx; width:112rpx; height:112rpx; margin-right:19rpx; box-sizing:border-box; overflow:hidden; border:4rpx solid #FFFCF6; border-radius:50%; color:#fff; background:#668B74; box-shadow:0 6rpx 16rpx rgba(31,81,62,.15); font-family:"Songti SC",SimSun,serif; font-size:38rpx; }
+.friend-intro-avatar image { display:block; width:100%; height:100%; transform-origin:center; }
+.friend-identity-copy { min-width:0; flex:1; }
+.friend-identity-name { overflow:hidden; color:#1F513E; font-family:"Songti SC",SimSun,serif; font-size:37rpx; font-weight:700; line-height:1.35; white-space:nowrap; text-overflow:ellipsis; }
+.friend-uid-chip { display:inline-flex; align-items:center; height:38rpx; margin-top:8rpx; padding:0 16rpx; box-sizing:border-box; border-radius:99rpx; color:#557463; background:#EDF2E9; font-size:20rpx; letter-spacing:1rpx; line-height:38rpx; }
+.friend-identity-divider { height:1rpx; margin:19rpx 0 16rpx; background:#E8E9DE; }
+.friend-intro-stats { display:flex; align-items:center; padding:14rpx 15rpx; border-radius:16rpx; background:linear-gradient(100deg,#FFF8E8,#EDF1E4); }
+.friend-intro-stats-icon { display:flex; align-items:center; justify-content:center; flex:0 0 62rpx; width:62rpx; height:62rpx; margin-right:14rpx; border-radius:15rpx; color:#4D7558; background:#E3EBDD; font-size:32rpx; }
+.friend-intro-stats-title { color:#345744; font-family:"Songti SC",SimSun,serif; font-size:26rpx; font-weight:700; }
+.friend-intro-stats-copy { margin-top:3rpx; color:#718078; font-size:20rpx; }
+.friend-intro-info { margin:17rpx 0; padding:24rpx 25rpx; }
+.friend-intro-heading { display:flex; align-items:center; }
+.friend-intro-icon { display:flex; align-items:center; justify-content:center; flex:0 0 58rpx; width:58rpx; height:58rpx; margin-right:15rpx; border-radius:50%; color:#51755B; background:#E7EEDB; font-size:29rpx; font-weight:700; }
+.friend-intro-icon.gold { color:#9A6A19; background:#F9EBCF; }
+.friend-intro-title { color:#294D3A; font-family:"Songti SC",SimSun,serif; font-size:29rpx; font-weight:700; }
+.friend-intro-subtitle { margin-top:2rpx; color:#849188; font-size:20rpx; }
+.friend-intro-bio { margin-top:18rpx; color:#42594C; font-size:26rpx; line-height:1.9; white-space:pre-wrap; }
+.friend-intro-bio.is-empty,.friend-intro-empty { margin-top:18rpx; color:#718078; font-size:22rpx; }
+.friend-intro-tags { display:flex; flex-wrap:wrap; gap:12rpx; margin-top:18rpx; }
+.friend-intro-tags text { padding:9rpx 19rpx; border-radius:99rpx; color:#496755; background:#E8EEDC; font-size:23rpx; }
+.friend-intro-tags text:nth-child(2n) { color:#856326; background:#F8ECCE; }

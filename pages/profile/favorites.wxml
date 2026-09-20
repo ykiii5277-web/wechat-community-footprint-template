@@ -1,0 +1,26 @@
+<view class="page-shell favorites-page">
+  <page-nav title="我的收藏"></page-nav>
+  <view class="favorite-tabs">
+    <view wx:for="{{['照片','成长','评论']}}" wx:key="*this" class="favorite-tab {{active === item ? 'active' : ''}} tap" data-type="{{item}}" bindtap="choose">{{item}}</view>
+  </view>
+  <view wx:if="{{items.length}}" class="favorite-list">
+    <view wx:for="{{items}}" wx:key="id" class="favorite-card card tap" data-item="{{item.id}}" bindtap="open">
+      <view class="favorite-art">
+        <image wx:if="{{item.kind !== 'comment' && (item.image || item.cover)}}" src="{{item.image || item.cover}}" mode="aspectFill"></image>
+        <scene-banner wx:elif="{{item.kind !== 'comment'}}" scene="{{item.scene}}" compact="{{true}}"></scene-banner>
+        <view wx:else class="comment-art">▤</view>
+      </view>
+      <view class="favorite-copy">
+        <view class="favorite-title">{{item.title || item.name}}</view>
+        <view wx:if="{{item.body}}" class="favorite-body">{{item.body}}</view>
+        <view class="favorite-meta">{{item.kind === 'comment' ? item.targetTitle : item.contentLabel || item.campName}} · {{item.date}}</view>
+      </view>
+      <view class="unfav tap" catchtap="unfavorite" data-id="{{item.id}}">♥</view>
+    </view>
+  </view>
+  <view wx:elif="{{loading}}" class="empty">正在读取收藏…</view>
+  <view wx:else class="empty">
+    这里还没有收藏。
+    <view>“照片”收录点赞的相册，“成长”收录点赞的记录与作品，“评论”收录点赞过的评论。</view>
+  </view>
+</view>

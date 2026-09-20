@@ -1,0 +1,6 @@
+<view class="page-shell shop-page">
+  <page-nav title="商店" subtitle="理性消费，切勿攀比"></page-nav>
+  <view class="pay-mode card"><view>道具直购</view><text>{{modeText || '等待云端支付配置'}}</text></view>
+  <view class="product-list"><view wx:for="{{products}}" wx:key="id" class="product-card card"><image src="{{item.image}}" mode="aspectFill"></image><view class="product-copy"><view>{{item.name}}</view><text>{{item.intro}}</text><view class="product-price">{{item.priceText}} / 个</view></view><button class="buy-button" size="mini" loading="{{buying === item.id}}" disabled="{{!!buying}}" data-id="{{item.id}}" bindtap="buy">购买</button></view></view>
+  <view class="shop-footnote">礼盒可直接购买，也可通过七日全勤任务获得；纪念册、月饼和红包无法在商店购买。</view>
+</view>

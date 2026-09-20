@@ -1,0 +1,30 @@
+page {
+  background: #F8F5ED;
+  color: #20362C;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+.page-shell { min-height: 100vh; box-sizing: border-box; padding: 0 28rpx 36rpx; }
+.safe-top { height: env(safe-area-inset-top); min-height: 24rpx; }
+.page-title { font-family: "Songti SC", SimSun, serif; color: #1F513E; font-size: 46rpx; font-weight: 700; letter-spacing: 2rpx; }
+.page-subtitle { color: #718078; font-size: 24rpx; margin-top: 6rpx; }
+.card { background: #FFFCF6; border-radius: 20rpx; box-shadow: 0 10rpx 30rpx rgba(39, 70, 52, .08); }
+.section-label { color: #1F513E; font-size: 27rpx; font-weight: 700; margin: 28rpx 0 16rpx; }
+.muted { color: #718078; }
+.empty { margin: 80rpx 12rpx; padding: 46rpx 30rpx; text-align: center; color: #718078; background: rgba(255,252,246,.72); border: 2rpx dashed #D7E1D9; border-radius: 20rpx; }
+.tap { transition: opacity .2s; }
+.tap:active { opacity: .75; }
+.pill { display: inline-flex; align-items: center; padding: 9rpx 21rpx; border-radius: 99rpx; background: #EDF1E5; color: #476353; font-size: 23rpx; margin-right: 12rpx; }
+.pill.gold { background: #FBF0D8; color: #9A6A19; }
+.pill.red { background: #F9E1DD; color: #A73D31; }
+.inline-icon { margin-right: 9rpx; }
+.hairline { height: 1rpx; background: #ECE9DF; }
+.btn-primary { border: 0; background: #1F513E; color: #fff; border-radius: 99rpx; font-size: 28rpx; line-height: 2.7; }
+.btn-primary::after { border: 0; }
+.btn-soft { border: 1rpx solid #D6A54A; background: #FFF9EC; color: #9A6A19; border-radius: 99rpx; font-size: 27rpx; line-height: 2.5; }
+.btn-soft::after { border: 0; }
+.star { color: #D6A54A; font-size: 35rpx; line-height: 1; }
+.bottom-space { height: 26rpx; }
+.image-preview-tip { padding: 12rpx 20rpx; color: #7E8B82; background: #F8F6EF; font-size: 20rpx; text-align: center; }

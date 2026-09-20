@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "page-nav": "/components/page-nav/index",
+    "scene-banner": "/components/scene-banner/index"
+  }
+}

@@ -1,0 +1,33 @@
+<view wx:if="{{profile}}" class="page-shell intro-page-v2">
+  <page-nav title="关于我"></page-nav>
+  <view class="intro-hero-v2"><scene-banner scene="rural" compact="{{true}}"></scene-banner></view>
+
+  <!-- 个人名片单独占据一个卡片，不再与横幅或下方内容叠放。 -->
+  <view class="identity-card-v2 card">
+    <view class="identity-primary-v2">
+      <view class="identity-avatar-v2">
+        <image wx:if="{{profile.avatar}}" class="identity-avatar-image-v2" src="{{profile.avatar}}" mode="aspectFill" style="transform: translate({{profile.avatarOffsetX}}rpx, {{profile.avatarOffsetY}}rpx) scale({{profile.avatarScale}});"></image>
+        <image wx:else class="identity-avatar-image-v2" src="/assets/images/profile-avatar-default.jpg" mode="aspectFill"></image>
+      </view>
+      <view class="identity-copy-v2">
+        <view class="identity-name-v2 {{profile.name ? '' : 'identity-name-empty-v2'}}">{{profile.displayName}}</view>
+        <view class="intro-id-chip-v2">UID {{profile.uid}}</view>
+      </view>
+    </view>
+    <view class="identity-divider-v2"></view>
+    <view class="identity-stats-v2"><view class="identity-stats-icon-v2">♧</view><view><view class="identity-stats-title-v2">{{profile.displayAge}}年成长 · {{profile.displayCampCount}}段活动经历</view><view class="identity-stats-copy-v2">在一次次同行中，记录成长与改变。</view></view></view>
+  </view>
+
+  <view class="intro-info-card-v2 card">
+    <view class="intro-card-heading-v2"><view class="intro-card-icon-v2">✦</view><view><view class="intro-card-title-v2">个人简介</view><view class="intro-card-subtitle-v2">写下一份个人签名吧，记录下你认为最美好的事物！</view></view></view>
+    <view class="intro-bio-v2 {{profile.bio ? '' : 'intro-bio-empty-v2'}}">{{profile.bio || '还没有个人简介，点击底部“编辑简介”写下想分享的自己。'}}</view>
+  </view>
+
+  <view class="intro-info-card-v2 card">
+    <view class="intro-card-heading-v2"><view class="intro-card-icon-v2 intro-card-icon-gold-v2">#</view><view><view class="intro-card-title-v2">我的标签</view><view class="intro-card-subtitle-v2">记录那些让我成为我的关键词</view></view></view>
+    <view wx:if="{{profile.tags.length}}" class="intro-tag-list-v2"><text wx:for="{{profile.tags}}" wx:key="*this" class="intro-tag-v2">{{item}}</text></view>
+    <view wx:else class="intro-empty-tags-v2">还没有标签，编辑简介后可添加。</view>
+  </view>
+
+  <view class="intro-bottom-edit-v2 tap" bindtap="edit">编辑简介</view>
+</view>

@@ -1,0 +1,26 @@
+<view class="page-shell editor-page">
+  <page-nav title="{{id ? '编辑记录' : '写记录'}}"></page-nav>
+  <view class="editor-card card">
+    <view class="field-label">标题</view>
+    <input class="title-input" placeholder="给这一刻起个名字" maxlength="30" value="{{title}}" bindinput="titleInput"/>
+    <view class="field-label">感受</view>
+    <textarea class="body-input" placeholder="写下今天想记住的片段……" maxlength="500" value="{{body}}" bindinput="bodyInput" auto-height="{{true}}"/>
+    <view class="field-label">关联营地</view>
+    <picker mode="selector" range="{{camps}}" range-key="name" value="{{campIndex}}" bindchange="campChange"><view class="picker-field">{{campName}} <text>›</text></view></picker>
+    <view class="field-label">时间</view>
+    <picker mode="date" value="{{dateForPicker}}" bindchange="dateChange"><view class="picker-field">{{date}} <text>›</text></view></picker>
+    <view class="field-label">地点</view>
+    <input class="text-input" placeholder="例如：湖南长沙 · 湘江边" maxlength="40" value="{{location}}" bindinput="locationInput"/>
+    <view class="field-label">照片（选填，最多 9 张）</view>
+    <view wx:if="{{images.length}}" class="record-image-grid">
+      <view wx:for="{{images}}" wx:key="*this" class="record-image-thumb"><image src="{{item}}" mode="aspectFill"></image><view class="remove-image tap" data-index="{{index}}" bindtap="removeImage">×</view></view>
+      <view wx:if="{{canAddImages}}" class="record-image-add tap" bindtap="chooseImages"><view>＋</view><text>添加</text></view>
+    </view>
+    <view wx:else class="image-picker tap" bindtap="chooseImages"><view class="image-plus">＋</view><view>选择本地照片</view><view class="muted">可一次选择多张，最多 9 张</view></view>
+    <view class="field-label">可见范围</view>
+    <picker mode="selector" range="{{visibilityOptions}}" range-key="name" value="{{visibilityIndex}}" bindchange="visibilityChange"><view class="picker-field">{{visibilityName}} <text>›</text></view></picker>
+    <view class="visibility-hint">{{visibilityHint}}</view>
+    <view wx:if="{{isPublic}}" class="switch-row"><view><view class="field-label inline-label">隐蔽我的 UID</view><view class="muted">公开展示时不显示作者 UID</view></view><switch color="#1F513E" checked="{{hideUid}}" bindchange="hideUidChange"/></view>
+  </view>
+  <button class="btn-primary save-btn" bindtap="save">发布记录</button>
+</view>

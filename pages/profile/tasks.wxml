@@ -1,0 +1,12 @@
+<view class="page-shell tasks-page">
+  <page-nav title="任务" subtitle="每日完成小小行动，积攒可以赠送的心意"></page-nav>
+  <view class="task-date">{{date}} · 每日 00:00 刷新</view>
+  <view class="task-list">
+    <view wx:for="{{tasks}}" wx:key="key" class="task-card card">
+      <view class="task-icon">{{item.icon}}</view><view class="task-copy"><view>{{item.title}}</view><text>{{item.description}}</text><view class="task-progress">{{item.complete ? '已完成' : '未完成'}} · 奖励 1 爱心</view></view>
+      <view wx:if="{{item.claimed}}" class="task-action claimed">已领取</view><view wx:elif="{{item.complete}}" class="task-action tap" data-key="{{item.key}}" bindtap="claim">领取</view><view wx:else class="task-action disabled">待完成</view>
+    </view>
+  </view>
+  <view wx:if="{{weekly}}" class="weekly-card card"><view class="weekly-heading"><view>本周全勤奖励</view><text>{{weekly.daysCompleted}} / 4 天</text></view><view class="weekly-copy">一周内有 4 天完成全部每日任务，可领取 1 个星星。</view><view wx:if="{{weekly.claimed}}" class="weekly-button claimed">已领取</view><view wx:elif="{{weekly.eligible}}" class="weekly-button tap" data-key="weekly" bindtap="claim">领取 1 个星星</view><view wx:else class="weekly-button disabled">再完成 {{weekly.remaining}} 天</view></view>
+  <view wx:if="{{perfectWeek}}" class="weekly-card perfect-week card"><view class="weekly-heading"><view>七日全勤礼盒</view><text>{{perfectWeek.daysCompleted}} / 7 天</text></view><view class="weekly-copy">一周内有 7 天完成全部每日任务，可领取 1 个礼盒。</view><view wx:if="{{perfectWeek.claimed}}" class="weekly-button claimed">已领取</view><view wx:elif="{{perfectWeek.eligible}}" class="weekly-button tap" data-key="weekly_gift_box" bindtap="claim">领取 1 个礼盒</view><view wx:else class="weekly-button disabled">再完成 {{perfectWeek.remaining}} 天</view></view>
+</view>

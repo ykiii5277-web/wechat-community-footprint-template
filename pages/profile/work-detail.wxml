@@ -1,0 +1,10 @@
+<view wx:if="{{work}}" class="page-shell work-detail">
+  <page-nav title="作品详情"></page-nav>
+  <view class="work-detail-card card">
+    <view wx:if="{{work.filePath}}" class="work-file-card tap" bindtap="openFile"><view class="work-file-icon">▤</view><view class="work-file-copy"><view>{{work.fileName || '已上传的作品文件'}}</view><text>{{fileMeta || '点击打开文件'}}</text></view><view class="work-file-open">打开 ›</view></view>
+    <image wx:elif="{{work.cover}}" class="work-cover" src="{{work.cover}}" mode="aspectFill"></image>
+    <scene-banner wx:else scene="{{camp.scene}}"></scene-banner>
+    <view class="work-detail-copy"><view class="work-detail-title">{{work.title}}</view><view class="work-detail-meta">{{work.date}}　·　{{camp.name}}　·　👁 {{work.views}} 浏览　·　♥ {{work.likes}} 点赞 <text wx:if="{{work.status === 'draft'}}" class="draft-badge">草稿</text></view><view class="content-visibility">可见范围 · {{work.visibilityLabel}}</view><view wx:if="{{work.location}}" class="work-detail-location">⌖ {{work.location}}</view><view wx:if="{{body}}" class="work-detail-body">{{body}}</view><view wx:else class="work-empty-body">暂未填写正文</view></view>
+  </view>
+  <view class="work-actions"><view class="work-favorite tap" bindtap="favorite">{{work.favorite ? '♥ 已点赞' : '♡ 点赞'}} {{work.likes}}</view><view class="work-draft tap" bindtap="edit">编辑</view><view class="work-delete tap" bindtap="remove">删除</view></view><comment-panel target-type="work" target-id="{{work.id}}" bind:change="refresh"></comment-panel><view class="work-note">作品仅作个人展示，不会发布到公开社区。</view>
+</view>

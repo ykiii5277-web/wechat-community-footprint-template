@@ -1,0 +1,46 @@
+<view class="page-shell settings-page">
+  <page-nav title="安全与协议" subtitle="隐私、规则与数据权利"></page-nav>
+
+  <view class="privacy-card card">
+    <view class="privacy-mark">隐</view>
+    <view class="privacy-copy">
+      <view class="privacy-title">微信隐私保护指引</view>
+      <text>查看在微信公众平台配置并生效的完整指引</text>
+    </view>
+    <view class="privacy-open tap" bindtap="openPrivacy">查看</view>
+  </view>
+
+  <view class="updated-tip">更新日期：2026 年 9 月 19 日</view>
+
+  <view class="section-list">
+    <view wx:for="{{sections}}" wx:key="id" class="policy-card card {{item.expanded ? 'expanded' : ''}}">
+      <view class="policy-head tap" data-index="{{index}}" bindtap="toggle">
+        <view class="policy-copy"><view>{{item.title}}</view><text>{{item.summary}}</text></view>
+        <view class="policy-arrow">{{item.expanded ? '⌃' : '⌄'}}</view>
+      </view>
+      <view wx:if="{{item.expanded}}" class="policy-body">
+        <view wx:for="{{item.paragraphs}}" wx:key="*this" wx:for-item="paragraph" class="policy-paragraph">{{paragraph}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="rights-actions card" style="height: 293rpx; display: block; box-sizing: border-box">
+    <view class="action-title">需要进一步帮助？</view>
+    <view class="action-hint">可联系开发者咨询隐私问题、申诉处理结果或补充数据删除申请。</view>
+    <button class="contact-button" bindtap="openFeedback" style="position: relative; left: -147rpx; top: 4rpx; width: 275rpx; display: block; box-sizing: border-box">联系开发者</button>
+    <button class="delete-button" loading="{{submittingDeletion}}" disabled="{{submittingDeletion || deletionRequested}}" bindtap="requestDeletion" style="position: relative; left: 147rpx; top: -110rpx; width: 279rpx; display: block; box-sizing: border-box">{{deletionRequested ? '删除申请已提交' : '申请注销账号'}}</button>
+  </view>
+  <view wx:if="{{feedbackVisible}}" class="feedback-mask" catchtouchmove="noop" catchtap="closeFeedback">
+    <view class="feedback-dialog" catchtap="noop">
+      <view class="feedback-title">联系开发者</view>
+      <view class="feedback-subtitle">请填写你遇到的问题或建议</view>
+      <textarea class="feedback-input" value="{{feedbackText}}" maxlength="1000" placeholder="请尽量描述发生问题的页面、操作步骤和具体现象……" auto-focus bindinput="feedbackInput"></textarea>
+      <view class="feedback-meta"><text>系统会附带你的 UID、昵称、头像与简介，方便管理员核实处理。</text><text>{{feedbackLength}}/1000</text></view>
+      <view class="feedback-actions">
+        <button class="feedback-cancel" disabled="{{sendingFeedback}}" bindtap="closeFeedback">取消</button>
+        <button class="feedback-send" loading="{{sendingFeedback}}" disabled="{{sendingFeedback}}" bindtap="sendFeedback">发送</button>
+      </view>
+    </view>
+  </view>
+  <view class="bottom-space"></view>
+</view>

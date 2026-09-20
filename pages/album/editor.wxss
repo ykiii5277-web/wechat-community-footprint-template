@@ -1,0 +1,25 @@
+.album-editor { padding-left:28rpx; padding-right:28rpx; }
+.editor-card { padding:25rpx 26rpx 30rpx; }
+.album-destination { display:flex; align-items:center; justify-content:space-between; margin-bottom:13rpx; padding:16rpx 18rpx; border-radius:15rpx; color:#687B70; background:#EAF1E8; font-size:21rpx; }.album-destination view { max-width:65%; overflow:hidden; color:#28533E; font-size:25rpx; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.field-label { margin:16rpx 0 9rpx; color:#1F513E; font-size:25rpx; font-weight:700; }
+.inline-label { margin:0 0 2rpx; }
+.text-input { height:68rpx; padding:0 14rpx; box-sizing:border-box; border-radius:13rpx; color:#20362C; background:#F8F6EF; font-size:27rpx; }
+.image-picker { padding:35rpx; border:2rpx dashed #C9D7C9; border-radius:16rpx; color:#607A68; background:#F3F4EC; font-size:24rpx; text-align:center; }
+.image-plus { color:#1F513E; font-size:42rpx; }
+.image-picker .muted { margin-top:3rpx; font-size:20rpx; }
+.album-image-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12rpx; }
+.album-image-thumb, .album-image-add { position:relative; height:190rpx; overflow:hidden; border-radius:15rpx; }
+.album-image-thumb image { display:block; width:100%; height:100%; }
+.album-image-add { display:flex; flex-direction:column; align-items:center; justify-content:center; border:2rpx dashed #C9D7C9; color:#607A68; background:#F3F4EC; font-size:21rpx; }
+.album-image-add view { color:#1F513E; font-size:38rpx; line-height:1; }
+.replace-image { position:absolute; right:8rpx; bottom:8rpx; padding:6rpx 12rpx; border-radius:99rpx; color:#fff; background:rgba(31,81,62,.8); font-size:19rpx; }
+.remove-image { position:absolute; top:8rpx; right:8rpx; width:42rpx; height:42rpx; border-radius:50%; color:#fff; background:rgba(32,54,44,.72); font-size:34rpx; line-height:38rpx; text-align:center; }
+.switch-row { display:flex; align-items:center; justify-content:space-between; padding:18rpx 0 5rpx; }
+.switch-row .muted { font-size:20rpx; }
+.picker-field { padding:17rpx; border-radius:13rpx; color:#52675A; background:#F8F6EF; }
+.picker-field text { float:right; color:#1F513E; font-size:35rpx; line-height:25rpx; }
+.visibility-hint { margin:7rpx 5rpx 1rpx; color:#859187; font-size:20rpx; }
+.editor-actions { display:flex; gap:16rpx; margin:27rpx 5rpx; }
+.save-button, .delete-button { flex:1; }
+.delete-button { border:0; border-radius:99rpx; color:#B3473A; background:#F8E8E4; font-size:27rpx; line-height:2.7; }
+.delete-button::after { border:0; }

@@ -1,0 +1,43 @@
+<view wx:if="{{item}}" class="page-shell community-detail">
+  <page-nav title="{{pageTitle}}"></page-nav>
+  <view class="community-card card">
+    <view wx:if="{{item.kind === 'photo' && item.image}}" class="community-image"><image class="tap" src="{{item.image}}" mode="aspectFit" data-index="0" bindtap="previewImage"></image></view>
+    <view wx:elif="{{item.kind === 'growth' && item.images.length}}" class="community-grid"><image wx:for="{{item.images}}" wx:key="*this" class="tap" src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="previewImage"></image></view>
+    <view wx:elif="{{item.kind === 'companion' && item.avatar}}" class="community-image"><image class="tap" src="{{item.avatar}}" mode="aspectFit" data-index="0" bindtap="previewImage"></image></view>
+    <view wx:else class="community-placeholder">{{item.kind === 'work' ? '▤' : '✦'}}</view>
+    <view wx:if="{{(item.kind === 'photo' && item.image) || (item.kind === 'growth' && item.images.length) || (item.kind === 'companion' && item.avatar)}}" class="image-preview-tip">点击查看大图 · 双指缩放 · 长按保存</view>
+    <view class="community-copy">
+      <view class="community-title">{{item.kind === 'photo' && !item.showName ? '相册中的一段记忆' : (item.title || item.name || '一段公开记忆')}}</view>
+      <view class="community-owner">{{item.ownerName}} · {{campName}}</view>
+      <view wx:if="{{item.kind === 'growth' && item.location}}" class="community-location">⌖ {{item.location}}</view>
+      <view wx:if="{{item.body}}" class="community-body">{{item.body}}</view><view wx:elif="{{item.introduction}}" class="community-body">{{item.introduction}}</view><view wx:if="{{item.story}}" class="community-story">{{item.story}}</view>
+      <view wx:if="{{item.fileName}}" class="community-file tap" bindtap="openFile">▤ {{item.fileName}}　打开 ›</view>
+      <view class="community-meta">{{item.date}}　·　👁 {{item.views}}　·　♥ {{item.likes}}</view>
+      <view class="community-status"><view class="community-public">{{item.visibilityLabel}}</view><view wx:if="{{item.ownerUid}}" class="community-author-uid">作者 UID {{item.ownerUid}}</view></view>
+    </view>
+  </view>
+  <view class="community-actions"><view class="community-like tap" bindtap="favorite">{{item.favorite ? '♥ 已点赞' : '♡ 点赞'}}　{{item.likes}}</view><view wx:if="{{item.canEdit}}" class="community-edit tap" bindtap="edit">编辑内容</view><view wx:else class="community-report tap" bindtap="reportContent">举报</view></view>
+  <view class="community-comments card">
+    <view class="comment-heading">评论 <text wx:if="{{commentCount}}">({{commentCount}})</text></view>
+    <view wx:if="{{comments.length}}" class="community-comment-list">
+      <view wx:for="{{comments}}" wx:key="id" wx:for-item="thread" class="community-comment-thread">
+        <view class="community-comment tap" data-id="{{thread.id}}" data-name="{{thread.author}}" data-can-delete="{{item.canEdit}}" bindtap="reply" bindlongpress="commentLongPress">
+          <view class="community-comment-avatar"><image wx:if="{{thread.authorAvatar}}" src="{{thread.authorAvatar}}" mode="aspectFill" style="transform: translate({{thread.authorAvatarOffsetX}}rpx, {{thread.authorAvatarOffsetY}}rpx) scale({{thread.authorAvatarScale}});"></image><text wx:else>{{thread.authorInitial}}</text></view>
+          <view class="community-comment-copy"><view>{{thread.author}}</view><text>{{thread.body}}</text><text class="community-comment-date">{{thread.date}}</text></view>
+          <view class="community-comment-actions"><view class="community-comment-like tap" data-id="{{thread.id}}" catchtap="favoriteComment">{{thread.favorite ? '♥' : '♡'}} {{thread.likes}}</view></view>
+        </view>
+        <view wx:if="{{thread.replyCount}}" class="community-thread-toggle tap" data-id="{{thread.id}}" bindtap="toggleReplies"><text>{{thread.expanded ? '⌃' : '⌄'}}</text>{{thread.expanded ? '收起回复' : thread.replyCount + ' 条回复'}}</view>
+        <view wx:if="{{thread.expanded}}" class="community-replies">
+          <view wx:for="{{thread.replies}}" wx:key="id" wx:for-item="reply" class="community-reply-item tap" data-id="{{reply.id}}" data-name="{{reply.author}}" data-can-delete="{{item.canEdit}}" bindtap="reply" bindlongpress="commentLongPress">
+            <view class="community-comment-avatar community-reply-avatar"><image wx:if="{{reply.authorAvatar}}" src="{{reply.authorAvatar}}" mode="aspectFill" style="transform: translate({{reply.authorAvatarOffsetX}}rpx, {{reply.authorAvatarOffsetY}}rpx) scale({{reply.authorAvatarScale}});"></image><text wx:else>{{reply.authorInitial}}</text></view>
+            <view class="community-comment-copy"><view>{{reply.author}}</view><text wx:if="{{reply.replyToName}}" class="community-reply-to">回复 @{{reply.replyToName}}</text><text>{{reply.body}}</text><text class="community-comment-date">{{reply.date}}</text></view>
+            <view class="community-comment-actions"><view class="community-comment-like tap" data-id="{{reply.id}}" catchtap="favoriteComment">{{reply.favorite ? '♥' : '♡'}} {{reply.likes}}</view></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="community-no-comment">还没有评论，写下第一句吧。</view>
+    <view wx:if="{{replyTarget}}" class="reply-banner">正在回复 @{{replyTarget.name}}<text class="tap" bindtap="cancelReply">取消</text></view>
+    <view class="community-composer"><input placeholder="{{commentPlaceholder}}" maxlength="240" value="{{commentBody}}" focus="{{commentFocus}}" bindinput="commentInput" bindblur="commentBlur" confirm-type="send" bindconfirm="submitComment"/><view class="tap" bindtap="submitComment">发送</view></view>
+  </view>
+</view>

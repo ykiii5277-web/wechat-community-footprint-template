@@ -1,0 +1,11 @@
+<view wx:if="{{camp}}" class="page-shell stage-page">
+  <page-nav title="{{pageTitle}}" subtitle="{{subtitle}}"></page-nav>
+  <scene-banner scene="{{camp.scene}}"></scene-banner>
+  <view class="stage-intro card"><view class="section-label">这段时光</view><view>{{intro}}</view></view>
+  <view class="module-grid">
+    <view class="module-card card tap" bindtap="companions"><view class="round green">♟</view><view wx:if="{{hasCompanions}}" class="module-notice">!</view><view class="action-name">伙伴</view><view class="muted">一起同行的人</view></view>
+    <view class="module-card card tap" bindtap="album"><view class="round gold">▧</view><view wx:if="{{hasAlbum}}" class="module-notice">!</view><view class="action-name">相册</view><view class="muted">留下的好时光</view></view>
+    <view class="module-card card tap" bindtap="records"><view class="round coral">✦</view><view wx:if="{{hasRecords}}" class="module-notice">!</view><view class="action-name">记录</view><view class="muted">写下此刻感受</view></view>
+    <view class="module-card card tap" bindtap="works"><view class="round blue">▤</view><view wx:if="{{hasWorks}}" class="module-notice">!</view><view class="action-name">作品</view><view class="muted">收好创作与文件</view></view>
+  </view>
+</view>

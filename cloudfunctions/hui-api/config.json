@@ -1,0 +1,26 @@
+{
+  "timeout": 60,
+  "triggers": [
+    {
+      "name": "huiDailyRewards",
+      "type": "timer",
+      "config": "0 15 1 * * * *"
+    },
+    {
+      "name": "huiPendingPaymentReconcile",
+      "type": "timer",
+      "config": "0 */5 * * * * *"
+    },
+    {
+      "name": "huiExpiredRewardCleanup",
+      "type": "timer",
+      "config": "0 0 * * * * *"
+    }
+  ],
+  "permissions": {
+    "openapi": [
+      "security.msgSecCheck",
+      "security.imgSecCheck"
+    ]
+  }
+}

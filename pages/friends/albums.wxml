@@ -1,0 +1,14 @@
+<view class="page-shell friend-albums-page">
+  <page-nav title="好友相册" subtitle="{{friend ? friend.name + '的足迹' : ''}}"></page-nav>
+  <view class="album-guide card"><view class="guide-icon">▣</view><view><view class="guide-title">选择一本相册</view><view class="guide-copy">进入相册后，再浏览好友在这段足迹中开放的照片。</view></view></view>
+  <view wx:if="{{albums.length}}" class="album-grid">
+    <view wx:for="{{albums}}" wx:key="id" class="album-card card tap" data-id="{{item.id}}" bindtap="openAlbum">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+      <view wx:else class="album-cover-empty"><view>▰</view><text>回忆留影</text></view>
+      <view class="album-shade"></view>
+      <view class="album-copy"><view>{{item.name}}</view><text>{{item.count}} 张可查看照片</text></view>
+      <view class="album-arrow">›</view>
+    </view>
+  </view>
+  <view wx:elif="{{!loading}}" class="empty card">好友在这个时期暂未开放相册照片。</view>
+</view>

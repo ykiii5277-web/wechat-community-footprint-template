@@ -1,0 +1,15 @@
+<view class="page-shell work-editor">
+  <page-nav title="{{id ? '编辑作品' : '新建作品'}}"></page-nav>
+  <view class="editor-card card">
+    <view class="field-label">作品文件（选填）</view>
+    <view wx:if="{{filePath}}" class="picked-file"><view class="file-symbol">▤</view><view class="file-copy"><view>{{fileName}}</view><text wx:if="{{fileMeta}}">{{fileMeta}}</text></view><view class="file-action tap" bindtap="chooseFile">更换</view><view class="file-remove tap" bindtap="clearFile">×</view></view>
+    <view wx:else class="file-picker tap" bindtap="chooseFile"><view class="file-plus">＋</view><view>选择要上传的文件</view><text>可从微信聊天中选择文件</text></view>
+    <view class="field-label">作品标题</view><input class="text-input" placeholder="给这篇作品起个名字" maxlength="36" value="{{title}}" data-field="title" bindinput="input"/>
+    <view class="field-label">正文</view><textarea class="body-input work-body" placeholder="写下这段经历、观察或想法……" maxlength="2000" value="{{body}}" data-field="body" bindinput="input" auto-height="{{true}}"/>
+    <view class="field-label">关联营地</view><picker mode="selector" range="{{camps}}" range-key="name" value="{{campIndex}}" bindchange="campChange"><view class="picker-field">{{campName}} <text>›</text></view></picker>
+    <view class="field-label">可见范围</view><picker mode="selector" range="{{visibilityOptions}}" range-key="name" value="{{visibilityIndex}}" bindchange="visibilityChange"><view class="picker-field">{{visibilityName}} <text>›</text></view></picker><view class="visibility-hint">{{visibilityHint}}</view>
+    <view wx:if="{{isPublic}}" class="switch-row"><view><view class="field-label inline-label">隐蔽我的 UID</view><view class="muted">公开展示时不显示作者 UID</view></view><switch color="#1F513E" checked="{{hideUid}}" bindchange="hideUidChange"/></view>
+  </view>
+  <view class="save-row"><button class="btn-soft draft-button" data-status="draft" bindtap="save">保存草稿</button><button class="btn-primary publish-button" data-status="published" bindtap="save">保存作品</button></view>
+  <view class="editor-note">可见范围会随作品保存；草稿不会进入动态热度榜。</view>
+</view>

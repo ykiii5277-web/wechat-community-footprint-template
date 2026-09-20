@@ -1,0 +1,14 @@
+<view wx:if="{{friend}}" class="page-shell friend-detail">
+  <page-nav title="好友资料"></page-nav>
+  <view class="friend-hero card">
+    <view class="detail-avatar"><image wx:if="{{friend.avatar}}" src="{{friend.avatar}}" mode="aspectFill" style="transform: translate({{friend.avatarOffsetX}}rpx, {{friend.avatarOffsetY}}rpx) scale({{friend.avatarScale}});"></image><text wx:else>{{initial}}</text></view>
+    <view class="detail-name">{{friend.name}}</view><view wx:if="{{friend.remark}}" class="detail-remark">我的备注 · {{friend.remark}}</view><view class="detail-gender">{{friend.gender}}</view>
+    <view class="affection-card"><view>Lv.{{friend.affection.level}} · {{friend.affection.title}}<text>{{friend.affection.points}} 好感度</text></view><view class="affection-description">{{friend.affection.description}}</view></view>
+    <view wx:if="{{friend.bio}}" class="detail-bio">{{friend.bio}}</view><view wx:if="{{friend.tags.length}}" class="detail-tags"><text wx:for="{{friend.tags}}" wx:key="*this">{{item}}</text></view>
+    <view class="friend-chat tap" bindtap="chat"><text>◌</text>和 {{friend.remark || friend.name}} 聊天<view>›</view></view>
+  </view>
+  <view class="received-panel card"><view class="received-heading"><view class="received-title">TA 收到的心意</view></view><view class="other-gifts-button tap" bindtap="toggleOtherGifts"><view class="other-gifts-label"><text>其</text><text>他</text><text>礼</text><text>物</text></view><text class="other-gifts-arrow">{{showOtherGifts ? '⌃' : '⌄'}}</text></view><view class="received-items primary-gifts"><view wx:for="{{primaryReceivedItems}}" wx:key="id" class="received-item"><image src="{{item.image}}" mode="aspectFill"></image><view>{{item.name}}</view><text>{{item.received}}</text></view></view><view wx:if="{{showOtherGifts}}" class="other-gifts"><view wx:if="{{otherReceivedItems.length}}" class="received-items other-gift-items"><view wx:for="{{otherReceivedItems}}" wx:key="id" class="received-item"><image src="{{item.image}}" mode="aspectFill"></image><view>{{item.name}}</view><text>{{item.received}}</text></view></view><view wx:else class="other-gifts-empty">无</view></view></view>
+  <view class="section-label">对方允许好友查看的内容</view>
+  <view class="content-grid"><view class="content-card card tap" data-type="footprints" bindtap="open"><view class="content-icon green">⌂</view><view>足迹</view><text>按营地与时期查看伙伴、相册、记录和作品</text></view><view class="content-card card tap" data-type="intro" bindtap="open"><view class="content-icon gold">♧</view><view>简介</view><text>了解这位好友</text></view></view>
+  <view class="friend-tools"><view class="friend-tool tap" bindtap="edit">编辑资料与备注</view><view class="friend-tool danger tap" bindtap="remove">删除好友</view></view>
+</view>

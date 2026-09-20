@@ -1,0 +1,7 @@
+.safe { height: env(safe-area-inset-top); min-height: 24rpx; }
+.nav-row { height: 92rpx; display: flex; align-items: center; }
+.back,.nav-space { width: 78rpx; flex: 0 0 78rpx; }
+.back { font-size: 68rpx; color: #1F513E; line-height: 65rpx; font-family: sans-serif; }
+.nav-heading { flex: 1; text-align: center; overflow: hidden; }
+.nav-title { color: #1F513E; font-family: "Songti SC", SimSun, serif; font-weight: 700; letter-spacing: 1rpx; font-size: 37rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-subtitle { color: #718078; font-size: 20rpx; margin-top: -2rpx; }

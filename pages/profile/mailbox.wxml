@@ -1,0 +1,43 @@
+<view class="page-shell mailbox-page">
+  <page-nav title="邮箱" subtitle="每一封邮件都承载记忆"></page-nav>
+  <view wx:if="{{mails.length}}" class="mail-list">
+    <view wx:for="{{mails}}" wx:key="id" class="mail-card card {{item.type === 'user_feedback' ? 'feedback-mail' : ''}}">
+      <view class="mail-heading">
+        <view>{{item.title}}<text wx:if="{{!item.readAt}}" class="unread-dot"></text></view>
+        <text>{{item.date}}</text>
+      </view>
+      <view wx:if="{{item.type === 'user_feedback'}}" class="feedback-sender">
+        <view wx:if="{{item.senderAvatar}}" class="feedback-avatar-wrap"><image src="{{item.senderAvatar}}" mode="aspectFill" style="transform:translate({{item.senderAvatarOffsetX || 0}}rpx,{{item.senderAvatarOffsetY || 0}}rpx) scale({{item.senderAvatarScale || 1}})"></image></view>
+        <view wx:else class="feedback-avatar-fallback">{{item.senderInitial || '未'}}</view>
+        <view class="feedback-sender-copy">
+          <view>{{item.senderName || '未命名用户'}}</view>
+          <text>UID {{item.senderUid}}</text>
+          <text wx:if="{{item.senderSince}}">注册于 {{item.senderSince}}</text>
+        </view>
+      </view>
+      <view wx:if="{{item.type === 'user_feedback' && item.senderBio}}" class="feedback-bio">简介：{{item.senderBio}}</view>
+      <view wx:if="{{item.type === 'user_feedback' && item.senderTags.length}}" class="feedback-tags">
+        <text wx:for="{{item.senderTags}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="mail-body {{item.type === 'user_feedback' ? 'feedback-content' : ''}}">{{item.body}}</view>
+      <view wx:if="{{item.message}}" class="mail-message">“{{item.message}}”</view>
+      <view wx:if="{{item.type === 'developer_reward' && item.expiresDate}}" class="mail-deadline">领取截止：{{item.expiresDate}} 23:59（北京时间）</view>
+      <scroll-view wx:if="{{item.images.length}}" class="mail-images" scroll-x>
+        <image wx:for="{{item.images}}" wx:for-item="image" wx:key="*this" src="{{image}}" mode="aspectFill" data-id="{{item.id}}" data-index="{{index}}" bindtap="preview"></image>
+      </scroll-view>
+      <view class="mail-foot">
+        <view wx:if="{{item.itemName}}" class="reward-chip">{{item.itemName}} × {{item.quantity}}</view>
+        <view wx:elif="{{item.type === 'user_feedback'}}" class="feedback-chip">用户反馈</view>
+        <view class="mail-foot-actions">
+          <view wx:if="{{item.status === 'pending'}}" class="claim-button tap" data-id="{{item.id}}" bindtap="claim">领取</view>
+          <view wx:elif="{{item.status === 'claimed'}}" class="claimed">已领取</view>
+          <view wx:elif="{{item.type === 'user_feedback'}}" class="feedback-state">待处理</view>
+          <view wx:else class="claimed">已计入心意</view>
+          <view class="mail-delete tap" data-id="{{item.id}}" catchtap="remove">删除</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:elif="{{loading}}" class="empty">正在收取邮件…</view>
+  <view wx:else class="empty">邮箱还是空的。<view>榜单奖励、开发者赠予和用户反馈会出现在这里。</view></view>
+</view>

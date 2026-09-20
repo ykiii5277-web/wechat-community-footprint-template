@@ -1,0 +1,12 @@
+.preview-page { padding-left:28rpx; padding-right:28rpx; }
+.large-photo { overflow:hidden; background:#F2F0E7; }
+.large-photo image, .large-photo scene-banner { display:block; height:480rpx; width:100%; }
+.photo-info { display:flex; align-items:flex-start; justify-content:space-between; margin-top:22rpx; padding:22rpx; }
+.photo-name { font-family:"Songti SC", SimSun, serif; font-size:34rpx; font-weight:700; }
+.photo-info .muted { margin-top:5rpx; font-size:22rpx; }
+.photo-metrics { margin-top:9rpx; color:#8A978D; font-size:21rpx; }
+.content-visibility { display:inline-block; margin-top:8rpx; padding:3rpx 9rpx; border-radius:99rpx; color:#557260; background:#EDF2E8; font-size:18rpx; }
+.favorite { display:flex; flex-direction:column; align-items:center; color:#9A6A19; font-size:20rpx; }
+.preview-actions { display:flex; gap:15rpx; margin-top:22rpx; }
+.preview-action { flex:1; padding:14rpx 0; border-radius:99rpx; color:#315F49; background:#E8F0E6; font-size:25rpx; text-align:center; }
+.preview-action.danger { color:#B3473A; background:#F8E8E4; }

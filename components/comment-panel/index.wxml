@@ -1,0 +1,24 @@
+<view class="comment-panel">
+  <view class="comment-heading">评论 <text wx:if="{{commentCount}}">({{commentCount}})</text></view>
+  <view wx:if="{{comments.length}}" class="comment-list">
+    <!-- 每一项是一个主评论，回复会被收纳进 replies 数组。 -->
+    <view wx:for="{{comments}}" wx:key="id" wx:for-item="thread" class="comment-thread">
+      <view class="comment-item tap" data-id="{{thread.id}}" data-name="{{thread.author}}" bindtap="reply" bindlongpress="commentLongPress">
+        <view class="comment-avatar"><image wx:if="{{thread.authorAvatar}}" src="{{thread.authorAvatar}}" mode="aspectFill" style="transform: translate({{thread.authorAvatarOffsetX}}rpx, {{thread.authorAvatarOffsetY}}rpx) scale({{thread.authorAvatarScale}});"></image><text wx:else>{{thread.authorInitial}}</text></view>
+        <view class="comment-copy"><view class="comment-author">{{thread.author}}</view><view class="comment-body">{{thread.body}}</view><view class="comment-meta">{{thread.date}}</view></view>
+        <view class="comment-actions"><view class="comment-like tap" data-id="{{thread.id}}" catchtap="favorite">{{thread.favorite ? '♥' : '♡'}}</view></view>
+      </view>
+      <view wx:if="{{thread.replyCount}}" class="comment-thread-toggle tap" data-id="{{thread.id}}" bindtap="toggleReplies"><text class="thread-toggle-icon">{{thread.expanded ? '⌃' : '⌄'}}</text>{{thread.expanded ? '收起回复' : thread.replyCount + ' 条回复'}}</view>
+      <view wx:if="{{thread.expanded}}" class="comment-replies">
+        <view wx:for="{{thread.replies}}" wx:key="id" wx:for-item="reply" class="comment-reply-item tap" data-id="{{reply.id}}" data-name="{{reply.author}}" bindtap="reply" bindlongpress="commentLongPress">
+          <view class="comment-avatar reply-avatar"><image wx:if="{{reply.authorAvatar}}" src="{{reply.authorAvatar}}" mode="aspectFill" style="transform: translate({{reply.authorAvatarOffsetX}}rpx, {{reply.authorAvatarOffsetY}}rpx) scale({{reply.authorAvatarScale}});"></image><text wx:else>{{reply.authorInitial}}</text></view>
+          <view class="comment-copy"><view class="comment-author">{{reply.author}}</view><view wx:if="{{reply.replyToName}}" class="comment-reply-to">回复 @{{reply.replyToName}}</view><view class="comment-body">{{reply.body}}</view><view class="comment-meta">{{reply.date}}</view></view>
+          <view class="comment-actions"><view class="comment-like tap" data-id="{{reply.id}}" catchtap="favorite">{{reply.favorite ? '♥' : '♡'}}</view></view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="no-comment">还没有评论，写下第一句吧。</view>
+  <view wx:if="{{replyTarget}}" class="reply-banner">正在回复 @{{replyTarget.name}}<text class="tap" bindtap="cancelReply">取消</text></view>
+  <view class="comment-composer"><input class="comment-input" placeholder="{{placeholder}}" maxlength="240" value="{{body}}" focus="{{commentFocus}}" bindinput="input" bindblur="commentBlur" confirm-type="send" bindconfirm="submit"/><view class="comment-send tap" bindtap="submit">发送</view></view>
+</view>

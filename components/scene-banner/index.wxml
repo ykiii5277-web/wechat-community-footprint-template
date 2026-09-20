@@ -1,0 +1,10 @@
+<view class="scene scene-{{scene}} {{compact ? 'compact' : ''}}" aria-label="{{scene}}水彩场景插画">
+  <image wx:if="{{!imageFailed}}" class="scene-image" src="{{imageSrc}}" mode="aspectFill" binderror="showFallback"></image>
+  <view class="cloud cloud-one"></view><view class="cloud cloud-two"></view>
+  <view class="mount mountain-back"></view><view class="mount mountain-front"></view>
+  <view class="river"></view><view class="road"></view>
+  <view class="school"><view class="roof"></view><view class="flag"></view><view class="windows"></view></view>
+  <view class="city"><view></view><view></view><view></view><view></view><view></view></view>
+  <view class="pearl"><view class="pearl-ball"></view></view>
+  <view class="people"><view class="person"><i></i></view><view class="person"><i></i></view><view class="person"><i></i></view></view>
+</view>

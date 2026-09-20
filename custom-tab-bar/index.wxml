@@ -1,0 +1,7 @@
+<view class="custom-tabbar">
+  <view wx:for="{{tabs}}" wx:key="key" class="tabbar-item tap {{selected === index ? 'selected' : ''}}" data-index="{{index}}" data-path="{{item.path}}" bindtap="switchTab">
+    <image class="nav-icon-image nav-icon-{{item.key}}" src="{{item.icon}}" mode="aspectFit"></image>
+    <view class="tabbar-label">{{item.text}}</view>
+    <view wx:if="{{item.key === 'friends' && badge}}" class="tabbar-badge">{{badge > 99 ? '99+' : badge}}</view>
+  </view>
+</view>

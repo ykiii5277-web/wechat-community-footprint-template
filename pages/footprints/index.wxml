@@ -1,0 +1,24 @@
+<view class="footprints-page">
+  <view class="safe-top"></view>
+  <view class="topline"><view><view class="page-title">足迹</view><view class="page-subtitle">沿着记忆的路径，再走一遍</view></view><view class="profile-dot">慧</view></view>
+  <view class="journey-map">
+    <image class="journey-map-image" src="/assets/images/footprints-map-v2.jpg" mode="widthFix"></image>
+    <view class="other-footprints-link tap" bindtap="openOtherFootprints"><text class="other-route-icon">⌁</text><text>更多活动</text><view wx:if="{{otherFootprintsHasContent}}" class="other-route-notice">!</view></view>
+    <view wx:for="{{camps}}" wx:key="id" class="journey-stop tap stop-{{item.id}}" data-id="{{item.id}}" bindtap="openCamp">
+      <view class="map-pin pin-{{item.scene}}"><text>{{item.scene === 'rural' ? '⌂' : item.scene === 'school' ? '◎' : item.scene === 'changsha' ? '▥' : '♥'}}</text></view>
+      <!-- 已有伙伴/相册内容的营地显示红色感叹号，提示可继续查看。 -->
+      <view wx:if="{{item.hasJourneyEdits}}" class="path-notice">!</view>
+      <view class="stop-label"><text>{{item.name}}</text><text class="chevron">›</text></view>
+    </view>
+  </view>
+  <!-- 自定义引导卡片可对品牌名单独加粗，原生弹窗无法做到这一点。 -->
+  <view wx:if="{{showProfileGuide}}" class="profile-guide-mask">
+    <view class="profile-guide-card">
+      <view class="profile-guide-leaf">✦</view>
+      <view class="profile-guide-title">欢迎来到<text>同行足迹</text></view>
+      <view class="profile-guide-copy">先完善头像、昵称和简介，让同行的朋友更好地认识你吧。</view>
+      <view class="profile-guide-note">也可以暂时跳过，稍后在“我的—简介”中编辑。</view>
+      <view class="profile-guide-actions"><view class="guide-skip tap" bindtap="guideSkip">暂时跳过</view><view class="guide-confirm tap" bindtap="guideEdit">去编辑</view></view>
+    </view>
+  </view>
+</view>

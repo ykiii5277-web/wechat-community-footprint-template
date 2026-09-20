@@ -1,0 +1,27 @@
+# Windows
+[Dd]esktop.ini
+Thumbs.db
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+# Node.js
+node_modules/
+
+# WeChat DevTools local/private files
+project.private.config.json
+*.log
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local build/reference artifacts
+codex-build-resources/
+codex-build-resources.zip

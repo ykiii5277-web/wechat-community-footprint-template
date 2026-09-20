@@ -1,0 +1,6 @@
+<view class="page-shell friend-activities-page">
+  <page-nav title="其他活动" subtitle="{{friend ? friend.name + '的足迹' : ''}}"></page-nav>
+  <view class="activity-guide card"><view class="guide-icon">♡</view><view><view class="guide-title">选择一段活动足迹</view><view class="guide-copy">进入活动后，再选择参与阶段或服务阶段查看内容。</view></view></view>
+  <view wx:if="{{activities.length}}" class="activity-list"><view wx:for="{{activities}}" wx:key="name" class="activity-card card tap" data-name="{{item.name}}" bindtap="openActivity"><image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image><view wx:else class="activity-cover-empty">♡</view><view class="activity-shade"></view><view class="activity-copy"><view>{{item.name}}</view><text>{{item.count}} 项可查看内容</text></view><view class="activity-arrow">›</view></view></view>
+  <view wx:elif="{{!loading}}" class="empty card">好友暂未开放“其他活动”中的内容。</view>
+</view>

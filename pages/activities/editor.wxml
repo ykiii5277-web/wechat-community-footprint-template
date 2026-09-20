@@ -1,0 +1,14 @@
+<view class="page-shell activity-editor">
+  <page-nav title="{{id ? '编辑活动' : '添加活动'}}"></page-nav>
+  <view class="editor-card card">
+    <view class="field-label">活动名称 <text>必填</text></view>
+    <input class="text-input" value="{{name}}" maxlength="30" placeholder="例如：云端茶话会、慧行" bindinput="input"/>
+    <view class="field-label">活动封面 <text>选填</text></view>
+    <view wx:if="{{cover}}" class="picked-image"><image src="{{cover}}" mode="aspectFill"></image><view class="cover-actions"><view class="cover-action tap" bindtap="chooseCover">更换封面</view><view class="cover-action danger tap" bindtap="clearCover">移除</view></view></view>
+    <view wx:else class="image-picker tap" bindtap="chooseCover"><view class="image-plus">＋</view><view>选择一张图片作为活动封面</view><text>不选择也可以直接创建</text></view>
+  </view>
+  <view class="editor-actions {{id ? 'has-delete' : ''}}">
+    <button wx:if="{{id}}" class="delete-button" loading="{{deleting}}" disabled="{{saving || deleting}}" bindtap="remove">删除活动</button>
+    <button class="btn-primary save-button" loading="{{saving}}" disabled="{{saving || deleting}}" bindtap="save">{{id ? '保存修改' : '创建活动'}}</button>
+  </view>
+</view>

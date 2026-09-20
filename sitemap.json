@@ -1,0 +1,4 @@
+{
+  "desc": "本地演示原型",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

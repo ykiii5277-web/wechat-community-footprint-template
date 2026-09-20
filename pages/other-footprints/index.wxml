@@ -1,0 +1,17 @@
+<view class="page">
+  <view class="safe"></view>
+  <view class="header"><view class="back tap" bindtap="backToFootprints">‹</view><view class="title">更多活动</view><view class="header-space"></view></view>
+  <view class="intro"><view class="intro-title">把每一次出发，都留在足迹里</view><view class="intro-copy">冬令营、星火计划与更多值得记住的活动</view></view>
+  <view class="map">
+    <image class="map-image" src="/assets/images/other-footprints-watercolor-v1.jpg" mode="aspectFill"></image>
+    <view class="spot winter tap" data-id="winter" bindtap="openCamp"><view class="pin pin-winter"><text>❄</text></view><view wx:if="{{winterHasContent}}" class="path-notice">!</view><view class="label">冬令营<text>›</text></view></view>
+    <view class="spot spark tap" data-id="spark" bindtap="openCamp"><view class="pin pin-spark"><text>✦</text></view><view wx:if="{{sparkHasContent}}" class="path-notice">!</view><view class="label">星火计划<text>›</text></view></view>
+    <view class="spot other tap" data-id="other" bindtap="openCamp"><view class="pin pin-other"><text>♡</text></view><view wx:if="{{otherHasContent}}" class="path-notice">!</view><view class="label">其他活动<text>›</text></view></view>
+  </view>
+  <view class="tabbar">
+    <view class="tab tap" data-path="/pages/fun/index" bindtap="switchTo"><image src="/assets/images/tab-fun-active-v2.png" mode="aspectFit"></image><view>动态</view></view>
+    <view class="tab active tap" data-path="/pages/footprints/index" bindtap="switchTo"><image src="/assets/images/tab-footprints-v2.png" mode="aspectFit"></image><view>足迹</view></view>
+    <view class="tab tap" data-path="/pages/friends/index" bindtap="switchTo"><image src="/assets/images/tab-friends-v2.png" mode="aspectFit"></image><view>好友</view></view>
+    <view class="tab tap" data-path="/pages/profile/index" bindtap="switchTo"><image src="/assets/images/tab-profile-v2.png" mode="aspectFit"></image><view>我的</view></view>
+  </view>
+</view>

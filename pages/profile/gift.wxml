@@ -1,0 +1,14 @@
+<view wx:if="{{item}}" class="page-shell gift-page">
+  <page-nav title="赠送{{item.name}}"></page-nav>
+  <view class="gift-hero card"><image src="{{item.image}}" mode="aspectFill"></image><view><view>{{item.name}} × {{count}}</view><text>{{item.affectionText}}</text></view></view>
+  <view class="mode-tabs"><view class="tap {{mode === 'uid' ? 'active' : ''}}" data-mode="uid" bindtap="mode">填写 UID</view><view class="tap {{mode === 'friend' ? 'active' : ''}}" data-mode="friend" bindtap="mode">选择好友</view></view>
+  <view class="gift-form card">
+    <view wx:if="{{mode === 'uid'}}" class="recipient-block"><view class="field-label">接收者 UID</view><input class="field-input" type="number" maxlength="7" value="{{uid}}" data-field="uid" bindinput="input" placeholder="填写对方 7 位 UID" placeholder-style="line-height:76rpx;"/></view>
+    <block wx:else><view class="field-label">选择好友</view><picker wx:if="{{friends.length}}" range="{{friends}}" range-key="displayName" value="{{friendIndex}}" bindchange="friendChange"><view class="field-input picker">{{friends[friendIndex].displayName}}<text>⌄</text></view></picker><view wx:else class="empty-friends">暂无好友，也可以切换到 UID 赠送。</view></block>
+    <view class="field-label">赠送数量</view><view class="quantity"><view class="tap" data-delta="-1" bindtap="quantity">−</view><text>{{quantity}}</text><view class="tap" data-delta="1" bindtap="quantity">＋</view></view>
+    <block wx:if="{{item.id === 'envelope' || item.id === 'memory_book'}}"><view class="field-label">想说的话（最多 {{item.id === 'memory_book' ? 5000 : 3000}} 字）</view><textarea class="message-input" maxlength="{{item.id === 'memory_book' ? 5000 : 3000}}" value="{{message}}" data-field="message" bindinput="input" placeholder="把想说的话写在这里……"></textarea></block>
+    <block wx:if="{{item.id === 'memory_book'}}"><view class="field-label">纪念册图片（最多 9 张）</view><view class="image-grid"><view wx:for="{{images}}" wx:key="*this" class="image-cell"><image src="{{item}}" mode="aspectFill"></image><view class="image-remove tap" data-index="{{index}}" bindtap="removeImage">×</view></view><view wx:if="{{images.length < 9}}" class="image-add tap" bindtap="chooseImages">＋<text>添加图片</text></view></view></block>
+  </view>
+  <view class="gift-tip">赠送后会消耗背包库存，接收者只累计收到的心意，不能再次转赠；成为好友后，历史赠送会自动计入双方好感度。</view>
+  <button class="btn-primary send-button" loading="{{sending}}" disabled="{{sending || count < 1}}" bindtap="send">确认赠送</button>
+</view>

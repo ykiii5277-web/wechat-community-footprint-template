@@ -1,0 +1,26 @@
+<view class="page-shell admin-rewards-page">
+  <page-nav title="开发者福利" subtitle="向全部用户或指定账号发放邮箱奖励"></page-nav>
+  <view wx:if="{{loading}}" class="empty">正在验证开发者权限…</view>
+  <block wx:elif="{{isAdmin}}">
+    <view class="admin-summary card"><view>当前可发放用户</view><text>{{totalUsers}} 人</text><view class="summary-note">奖励会先进入接收者邮箱，领取后道具才会进入背包。</view></view>
+    <view class="scope-tabs"><view class="tap {{scope === 'all' ? 'active' : ''}}" data-scope="all" bindtap="scope">全部用户</view><view class="tap {{scope === 'uid' ? 'active' : ''}}" data-scope="uid" bindtap="scope">指定 UID</view></view>
+    <view class="reward-form card">
+      <block wx:if="{{scope === 'uid'}}"><view class="field-label">接收账号 UID</view><input class="text-input" type="number" maxlength="7" value="{{targetUid}}" data-field="targetUid" bindinput="input" placeholder="填写接收者的 7 位 UID"/></block>
+      <view class="field-label">奖励道具</view>
+      <picker range="{{items}}" range-key="name" value="{{itemIndex}}" bindchange="itemChange"><view class="picker-field"><view><image src="{{items[itemIndex].image}}" mode="aspectFill"></image>{{items[itemIndex].name}}</view><text>›</text></view></picker>
+      <view class="item-hint">{{items[itemIndex].intro}}</view>
+      <view class="field-label">{{scope === 'all' ? '每人数量' : '发放数量'}}</view><input class="text-input" type="number" maxlength="3" value="{{quantity}}" data-field="quantity" bindinput="input"/>
+      <view class="field-label">邮件标题</view><input class="text-input" maxlength="40" value="{{title}}" data-field="title" bindinput="input"/>
+      <view class="field-label">邮件正文</view><textarea class="body-input" maxlength="300" value="{{body}}" data-field="body" bindinput="input" auto-height="{{true}}"/>
+      <view class="field-label">领取截止日期</view>
+      <picker mode="date" value="{{expiresDate}}" start="{{minDate}}" bindchange="deadlineChange"><view class="date-field"><text>{{expiresDate}}</text><text>›</text></view></picker>
+      <view class="deadline-hint">用户可在所选日期 23:59:59 前领取。超过截止时间仍未领取的奖励邮件会自动删除。</view>
+      <view class="field-label batch-label">批次标识<text class="new-batch tap" bindtap="resetCampaign">生成新批次</text></view>
+      <input class="text-input" maxlength="60" value="{{campaignKey}}" data-field="campaignKey" bindinput="input"/>
+      <view class="batch-hint">只能使用字母、数字、横线和下划线。同一批次可安全重试，已生成过邮件的用户不会重复获得奖励；重试时请保持原截止日期不变。</view>
+    </view>
+    <view wx:if="{{progressText}}" class="progress-card card"><view>{{progressText}}</view><text wx:if="{{processed}}">新增 {{created}} · 跳过 {{skipped}}</text></view>
+    <button class="send-button" loading="{{sending}}" disabled="{{sending || (scope === 'all' && !totalUsers)}}" bindtap="send">{{sending ? '正在发放' : (scope === 'all' ? '向全部用户发放' : '向指定 UID 发放')}}</button>
+    <view class="security-note">该入口仅对云端标记的管理员账号显示。发放记录以独立邮箱文档保存，请勿直接修改用户背包。</view>
+  </block>
+</view>

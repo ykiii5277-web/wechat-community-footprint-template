@@ -1,0 +1,15 @@
+  <view wx:if="{{visible}}" class="avatar-cropper" catchtouchmove="stop">
+  <view class="cropper-safe"></view>
+  <view class="cropper-title">移动和缩放</view>
+  <view class="cropper-stage">
+    <view wx:if="{{ready}}" class="cropper-frame" style="width:{{framePx}}px;height:{{framePx}}px;" bindtouchstart="touchStart" catchtouchmove="touchMove" bindtouchend="touchEnd" bindtouchcancel="touchEnd">
+      <image class="cropper-image" src="{{cropSource}}" mode="scaleToFill" style="left:{{imageLeft}}px;top:{{imageTop}}px;width:{{baseWidth}}px;height:{{baseHeight}}px;transform:scale({{cropScale}});"></image>
+      <view class="cropper-ring"></view>
+    </view>
+    <view wx:else class="cropper-loading">正在读取头像…</view>
+  </view>
+  <view class="cropper-tip">单指拖动调整位置，双指捏合放大或缩小</view>
+  <view class="cropper-actions"><view class="toolbar-action tap" bindtap="cancel">取消</view><view class="toolbar-action confirm tap" bindtap="complete">完成</view></view>
+  <view class="cropper-bottom"></view>
+</view>
+<canvas canvas-id="avatarCropCanvas" class="avatar-output-canvas"></canvas>

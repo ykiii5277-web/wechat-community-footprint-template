@@ -1,0 +1,17 @@
+<view class="page-shell activities-page">
+  <page-nav title="其他活动"></page-nav>
+  <view class="activity-intro card"><view class="intro-icon">♡</view><view><view class="intro-title">为每段活动建立一份足迹</view><view class="intro-copy">创建活动后，再分别记录参与阶段与服务阶段的伙伴、相册、记录和作品。</view></view></view>
+  <view wx:if="{{activities.length}}" class="activity-list">
+    <view wx:for="{{activities}}" wx:key="id" class="activity-card card tap" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="openActivity">
+      <image wx:if="{{item.cover}}" class="activity-cover" src="{{item.cover}}" mode="aspectFill"></image>
+      <view wx:else class="activity-cover activity-cover-empty"><view>♡</view><text>活动足迹</text></view>
+      <view class="activity-shade"></view>
+      <view class="activity-copy"><view class="activity-name">{{item.name}}</view><view class="activity-count">{{item.contentCount ? item.contentCount + ' 项内容' : '从这里开始记录'}}</view></view>
+      <view class="activity-arrow">›</view>
+      <view class="activity-edit tap" data-id="{{item.id}}" catchtap="editActivity">编辑</view>
+    </view>
+  </view>
+  <view wx:elif="{{!loading}}" class="empty card"><view class="empty-icon">＋</view><view class="empty-title">还没有创建活动</view><view class="empty-copy">点击下方按钮，填写活动名称并可选一张封面。</view></view>
+  <view class="bottom-space"></view>
+  <button class="add-activity" bindtap="addActivity">＋ 添加活动</button>
+</view>

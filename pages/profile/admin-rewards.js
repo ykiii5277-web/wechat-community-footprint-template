@@ -31,12 +31,17 @@ Page({
     processed: 0,
     created: 0,
     skipped: 0,
-    progressText: ''
+    progressText: '',
+    deletionUid: '',
+    deletionConfirmUid: '',
+    deletionTarget: null,
+    previewingDeletion: false,
+    deletingAccount: false
   },
   onLoad() {
     this.setData({ campaignKey: newCampaignKey(), minDate: chinaDateValue(), expiresDate: chinaDateValue(7) });
-    this.loadStatus();
   },
+  onShow() { this.loadStatus(); },
   async loadStatus() {
     const result = await cloud.getAdminStatus();
     if (!result || result.error || !result.isAdmin) {
@@ -54,6 +59,48 @@ Page({
   itemChange(e) { this.setData({ itemIndex: Number(e.detail.value) || 0 }); },
   deadlineChange(e) { this.setData({ expiresDate: e.detail.value }); },
   resetCampaign() { if (!this.data.sending) this.setData({ campaignKey: newCampaignKey(), processed: 0, created: 0, skipped: 0, progressText: '' }); },
+  deletionUidInput(e) {
+    this.setData({ deletionUid: e.detail.value, deletionConfirmUid: '', deletionTarget: null });
+  },
+  deletionConfirmInput(e) { this.setData({ deletionConfirmUid: e.detail.value }); },
+  async previewDeletion() {
+    if (this.data.previewingDeletion || this.data.deletingAccount || !this.data.isAdmin) return;
+    const uid = String(this.data.deletionUid || '').trim();
+    if (!/^\d{7}$/.test(uid)) return wx.showToast({ title: '请输入完整的 7 位 UID', icon: 'none' });
+    this.setData({ previewingDeletion: true, deletionTarget: null, deletionConfirmUid: '' });
+    try {
+      const result = await cloud.previewAccountDeletion(uid);
+      if (!result || result.error || !result.target) throw new Error(result && result.message || '查询账号失败');
+      if (String(this.data.deletionUid || '').trim() !== uid) return;
+      this.setData({ deletionTarget: result.target });
+    } catch (error) {
+      wx.showModal({ title: '无法删除该账号', content: String(error && error.message || '请稍后重试'), showCancel: false });
+    } finally {
+      this.setData({ previewingDeletion: false });
+    }
+  },
+  async deleteAccount() {
+    if (this.data.deletingAccount || !this.data.isAdmin) return;
+    const target = this.data.deletionTarget;
+    if (!target || String(this.data.deletionUid || '').trim() !== target.uid || String(this.data.deletionConfirmUid || '').trim() !== target.uid) return wx.showToast({ title: '请核对并再次输入 UID', icon: 'none' });
+    const agreed = await confirm({ title: `永久删除 UID ${target.uid}？`, content: `账号：${target.name}\n将删除其资料、内容、评论、好友、聊天、道具、任务、邮箱及关联云文件，也可能影响与该账号互动的其他用户。无法恢复；目标账号再次登录会新建资料。`, confirmText: '确认删除', confirmColor: '#B3473E' });
+    if (!agreed || this.data.deletionTarget !== target) return;
+    this.setData({ deletingAccount: true });
+    wx.showLoading({ title: '正在删除账号', mask: true });
+    try {
+      const result = await cloud.deleteAccountByUid(target.uid, target.accountKey);
+      if (!result || result.error) throw new Error(result && result.message || '云端删除失败，请先核对账号状态');
+      if (!result.completed) throw new Error(`有 ${Number(result.failed) || 0} 项未完成。请保留原 UID，再次查询并重试；不要另建同 UID 账号。`);
+      this.setData({ deletionUid: '', deletionConfirmUid: '', deletionTarget: null, totalUsers: Math.max(0, this.data.totalUsers - 1) });
+      const shared = Number(result.storage && result.storage.sharedRetained) || 0;
+      wx.showModal({ title: '账号已删除', content: `UID ${target.uid} 的账号及关联记录已清理，删除云文件 ${Number(result.storage && result.storage.removed) || 0} 个。${shared ? `另有 ${shared} 个文件仍被其他记录引用，已保留以免影响其他用户。` : ''}该微信账号再次登录会重新建档。`, showCancel: false, confirmText: '知道了' });
+    } catch (error) {
+      wx.showModal({ title: '删除未确认完成', content: String(error && error.message || '请到云端核对后再重试'), showCancel: false });
+    } finally {
+      wx.hideLoading();
+      this.setData({ deletingAccount: false });
+    }
+  },
   async send() {
     if (this.data.sending || !this.data.isAdmin) return;
     const item = this.data.items[this.data.itemIndex];

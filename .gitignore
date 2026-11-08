@@ -1,27 +1,21 @@
-# Windows
+# OS and editor files
 [Dd]esktop.ini
 Thumbs.db
-$RECYCLE.BIN/
-
-# macOS
 .DS_Store
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
+.vscode/
+.idea/
 
-# Node.js
+# Dependencies and private configuration
 node_modules/
-
-# WeChat DevTools local/private files
 project.private.config.json
-*.log
-
-# Local environment and secrets
 .env
 .env.*
 !.env.example
+*.log
 
-# Local build/reference artifacts
+# Local exports, reports and uploads
 codex-build-resources/
 codex-build-resources.zip
+文件/
+*.zip
+*-validation-*.json

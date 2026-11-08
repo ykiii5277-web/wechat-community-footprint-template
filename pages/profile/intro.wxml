@@ -15,7 +15,7 @@
       </view>
     </view>
     <view class="identity-divider-v2"></view>
-    <view class="identity-stats-v2"><view class="identity-stats-icon-v2">♧</view><view><view class="identity-stats-title-v2">{{profile.displayAge}}年成长 · {{profile.displayCampCount}}段活动经历</view><view class="identity-stats-copy-v2">在一次次同行中，记录成长与改变。</view></view></view>
+    <view class="identity-stats-v2"><view class="identity-stats-icon-v2">♧</view><view><view class="identity-stats-title-v2">{{profile.displayAge}}年同行年限 · {{profile.displayCampCount}}段社群经历</view><view class="identity-stats-copy-v2">在乡村、城市之间，用行动传递温暖与希望。</view></view></view>
   </view>
 
   <view class="intro-info-card-v2 card">
@@ -29,5 +29,6 @@
     <view wx:else class="intro-empty-tags-v2">还没有标签，编辑简介后可添加。</view>
   </view>
 
-  <view class="intro-bottom-edit-v2 tap" bindtap="edit">编辑简介</view>
+  <view class="intro-bottom-edit-v2 tap {{guideStep && guideStep.id === 'intro' ? 'feature-guide-focus' : ''}}" bindtap="edit">编辑简介</view>
 </view>
+<feature-guide-overlay wx:if="{{guideStep}}" step="{{guideStep}}" index="{{guideIndex}}" total="{{guideTotal}}"></feature-guide-overlay>

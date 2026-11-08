@@ -1,0 +1,18 @@
+<view class="image-viewer">
+  <swiper class="gallery" current="{{current}}" duration="250" disable-touch="{{true}}" bindchange="change">
+    <swiper-item wx:for="{{images}}" wx:key="index">
+      <view wx:if="{{index >= current - 1 && index <= current + 1}}" class="image-area" bindtouchstart="touchStart" catchtouchmove="touchMove" bindtouchend="touchEnd" bindtouchcancel="touchCancel">
+        <image class="full-image" src="{{item.url}}" mode="aspectFit" style="transform: {{index === current ? imageTransform : ''}}" show-menu-by-longpress="{{false}}" data-index="{{index}}" bindload="imageLoad" binderror="imageError"></image>
+        <view wx:if="{{item.failed}}" class="image-error">图片加载失败，请返回后重试</view>
+      </view>
+    </swiper-item>
+  </swiper>
+  <view class="viewer-toolbar" style="padding-top:{{topInset}}px">
+    <view class="viewer-close" bindtap="close" aria-label="退出图片预览">‹ 返回</view>
+    <view class="viewer-counter">{{current + 1}} / {{total}}</view>
+  </view>
+  <view class="viewer-footer">
+    <view class="viewer-hint">{{zoomed ? '拖动查看细节，双指缩小后可切换图片' : '左右滑动切换 · 双指缩放'}}</view>
+    <button class="save-image" loading="{{saving}}" disabled="{{saving}}" bindtap="save">保存图片</button>
+  </view>
+</view>

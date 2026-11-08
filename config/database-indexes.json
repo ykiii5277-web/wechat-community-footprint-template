@@ -1,0 +1,428 @@
+{
+  "collections": [
+    "hui_profiles",
+    "hui_uid_claims",
+    "hui_contents",
+    "hui_friend_requests",
+    "hui_friendships",
+    "hui_likes",
+    "hui_comments",
+    "hui_content_views",
+    "hui_chat_messages",
+    "hui_reports",
+    "hui_item_wallets",
+    "hui_item_gifts",
+    "hui_daily_tasks",
+    "hui_weekly_claims",
+    "hui_mailbox",
+    "hui_reward_runs"
+  ],
+  "clientPermissions": {
+    "read": false,
+    "write": false
+  },
+  "indexes": [
+    {
+      "collection": "hui_profiles",
+      "name": "idx_uid_lookup",
+      "unique": false,
+      "fields": [
+        {
+          "field": "uid",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_profiles",
+      "name": "idx_admin_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "isAdmin",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_contents",
+      "name": "idx_visibility_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "visibility",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_contents",
+      "name": "idx_owner_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "ownerOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_contents",
+      "name": "idx_kind_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "kind",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_friend_requests",
+      "name": "idx_from_to_pending_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "fromOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "toOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "status",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_friend_requests",
+      "name": "idx_to_pending_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "toOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "status",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_friendships",
+      "name": "idx_pair_lookup",
+      "unique": false,
+      "fields": [
+        {
+          "field": "pairKey",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_friendships",
+      "name": "idx_members_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "members",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_likes",
+      "name": "idx_content_actor_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "contentRef",
+          "order": "asc"
+        },
+        {
+          "field": "actorOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_likes",
+      "name": "idx_comment_actor_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "commentRef",
+          "order": "asc"
+        },
+        {
+          "field": "actorOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_likes",
+      "name": "idx_actor_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "actorOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_comments",
+      "name": "idx_content_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "contentRef",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_comments",
+      "name": "idx_parent_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "parentId",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_content_views",
+      "name": "idx_content_viewer",
+      "unique": false,
+      "fields": [
+        {
+          "field": "contentRef",
+          "order": "asc"
+        },
+        {
+          "field": "viewerOpenid",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_chat_messages",
+      "name": "idx_conversation_latest",
+      "unique": false,
+      "fields": [
+        {
+          "field": "conversationId",
+          "order": "asc"
+        },
+        {
+          "field": "createdAt",
+          "order": "desc"
+        },
+        {
+          "field": "_id",
+          "order": "desc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_chat_messages",
+      "name": "idx_receiver_unread_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "receiverOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "readAt",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_reports",
+      "name": "idx_reporter_lookup",
+      "unique": false,
+      "fields": [
+        {
+          "field": "reporterOpenid",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_item_gifts",
+      "name": "idx_sender_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "senderOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_item_gifts",
+      "name": "idx_receiver_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "receiverOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_daily_tasks",
+      "name": "idx_owner_week",
+      "unique": false,
+      "fields": [
+        {
+          "field": "openid",
+          "order": "asc"
+        },
+        {
+          "field": "weekKey",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_mailbox",
+      "name": "idx_recipient_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "recipientOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_mailbox",
+      "name": "idx_type_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "type",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_mailbox",
+      "name": "idx_expiry_lookup",
+      "unique": false,
+      "fields": [
+        {
+          "field": "expiresPendingAt",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_reward_runs",
+      "name": "idx_winner_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "winners.openid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "hui_uid_claims",
+      "name": "idx_owner_pk",
+      "unique": false,
+      "fields": [
+        {
+          "field": "ownerOpenid",
+          "order": "asc"
+        },
+        {
+          "field": "_id",
+          "order": "asc"
+        }
+      ]
+    }
+  ]
+}

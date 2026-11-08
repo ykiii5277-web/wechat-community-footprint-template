@@ -5,7 +5,7 @@
     <view class="album-intro card"><view class="intro-icon">▣</view><view><view class="intro-title">先建立相册，再收藏照片</view><view class="intro-copy">每个足迹可以建立多个相册，进入对应相册后才能上传照片。</view></view></view>
     <view wx:if="{{folders.length}}" class="folder-grid">
       <view wx:for="{{folders}}" wx:key="id" class="folder-card card tap" data-id="{{item.id}}" bindtap="openFolder">
-        <image wx:if="{{item.displayCover}}" src="{{item.displayCover}}" mode="aspectFill"></image>
+        <image lazy-load="{{true}}" wx:if="{{item.displayCover}}" src="{{item.displayCover}}" mode="aspectFill"></image>
         <view wx:else class="folder-cover"><view>▰</view><text>回忆留影</text></view>
         <view class="folder-shade"></view>
         <view class="folder-copy"><view>{{item.name}}</view><text>{{item.count}} 张照片</text></view>
@@ -13,18 +13,19 @@
         <view class="folder-edit tap" data-id="{{item.id}}" catchtap="editFolder">编辑</view>
       </view>
     </view>
-    <view wx:else class="empty card"><view class="empty-plus">＋</view><view class="empty-title">还没有相册</view><view>相册名称可留空，默认使用“回忆集”。</view></view>
+    <view wx:else class="empty card"><view class="empty-plus">＋</view><view class="empty-title">还没有相册</view><view>为相册起个名字，整理属于这段经历的照片。</view></view>
     <view class="bottom-space"></view>
     <button class="new-album-button" bindtap="createFolder">＋ 新建相册</button>
   </block>
 
   <block wx:else>
-    <view class="current-album card"><view><view class="current-name">{{currentFolder.name}}</view><view class="current-count">{{photos.length}} 张照片 · 照片只会保存在当前相册</view></view><view class="edit-album tap" data-id="{{folderId}}" bindtap="editFolder">编辑相册</view></view>
-    <view class="album-heading"><view class="section-label">相册照片</view><view wx:if="{{photos.length}}" class="selection-toggle tap" bindtap="toggleSelectionMode">{{selectionMode ? '取消多选' : '多选管理'}}</view></view>
-    <view wx:if="{{photos.length}}" class="album-grid {{selectionMode ? 'is-selecting' : ''}}"><view wx:for="{{photos}}" wx:key="id" class="photo-card card tap {{item.offset}} {{item.selected ? 'is-selected' : ''}}" data-id="{{item.id}}" bindtap="tapPhoto"><view class="photo-art"><image wx:if="{{item.image && !item.imageFailed}}" src="{{item.image}}" mode="aspectFill" data-id="{{item.id}}" binderror="imageError"></image><scene-banner wx:else scene="{{item.campId === 'summer' ? 'school' : item.campId}}" compact="{{true}}"></scene-banner></view><view class="photo-copy"><view wx:if="{{item.showName}}" class="photo-title">{{item.name}}</view><view class="photo-date">{{item.date}}</view><view class="photo-stats">👁 {{item.views}}　♥ {{item.likes}}</view></view><view wx:if="{{selectionMode}}" class="multi-check">{{item.selected ? '✓' : ''}}</view><view wx:else class="corner-star">♥ {{item.likes}}</view></view></view>
+    <view class="current-album card"><view><view class="current-name">{{currentFolder.name}}</view><view class="current-count">{{photoCount}} 张照片 · 照片只会保存在当前相册</view></view><view class="edit-album tap" data-id="{{folderId}}" bindtap="editFolder">编辑相册</view></view>
+    <view class="album-heading"><view class="section-label">相册照片</view><view wx:if="{{photoCount}}" class="selection-toggle tap" bindtap="toggleSelectionMode">{{selectionMode ? '取消多选' : '多选管理'}}</view></view>
+    <view wx:if="{{selectionMode && photoCount}}" class="selection-summary"><view class="select-all tap" bindtap="toggleSelectAll"><text class="select-all-check {{allSelected ? 'checked' : ''}}">{{allSelected ? '✓' : ''}}</text>{{allSelected ? '取消全选' : '全选'}}</view><text>已选 {{selectedCount}} / {{photoCount}} 张</text></view>
+    <view wx:if="{{photoCount}}" class="album-grid {{selectionMode ? 'is-selecting' : ''}}"><view wx:for="{{photos}}" wx:key="id" class="photo-card card tap {{item.offset}} {{item.selected ? 'is-selected' : ''}}" data-id="{{item.id}}" bindtap="tapPhoto"><view class="photo-art"><image lazy-load="{{true}}" wx:if="{{item.image && !item.imageFailed}}" src="{{item.image}}" mode="aspectFill" data-id="{{item.id}}" binderror="imageError"></image><scene-banner wx:else scene="{{item.campId === 'summer' ? 'school' : item.campId}}" compact="{{true}}"></scene-banner></view><view class="photo-copy"><view wx:if="{{item.showName || item.visibility === 'public'}}" class="photo-title">{{item.name}}</view><view class="photo-meta"><text class="photo-date">{{item.date}}</text><text class="photo-visibility visibility-{{item.visibility}}">{{item.visibilityLabel}}</text><view class="photo-stats"><view class="photo-stat"><text class="stat-icon">👁</text><text class="stat-count">{{item.views}}</text></view><view class="photo-stat"><text class="stat-icon">♥</text><text class="stat-count">{{item.likes}}</text></view></view></view></view><view wx:if="{{selectionMode}}" class="multi-check">{{item.selected ? '✓' : ''}}</view><view wx:else class="corner-star">♥ {{item.likes}}</view></view></view>
     <view wx:else class="empty card"><view class="empty-plus">＋</view><view class="empty-title">这个相册还是空的</view><view>点击下方“上传图片”，照片会直接保存到这里。</view></view>
-    <view class="album-tip">{{selectionMode ? '已选择 ' + selectedIds.length + ' 张图片' : '可为当前相册连续上传多张照片。'}}</view>
-    <view wx:if="{{selectionMode}}" class="fixed-album-bar batch-bar"><view class="batch-delete tap" bindtap="deleteSelected">删除所选</view><view class="batch-move tap" bindtap="moveSelected">移动到其他相册</view></view>
+    <view class="album-tip">{{selectionMode ? '已选择 ' + selectedCount + ' 张图片' : '可为当前相册连续上传多张照片。'}}</view>
+    <view wx:if="{{selectionMode}}" class="fixed-album-bar batch-bar"><button class="batch-delete" disabled="{{selectionBusy || !selectedCount}}" bindtap="deleteSelected">删除所选</button><button class="batch-move" disabled="{{selectionBusy || !selectedCount}}" bindtap="moveSelected">移动相册</button><button class="batch-visibility" loading="{{selectionBusy}}" disabled="{{selectionBusy || !selectedCount}}" bindtap="changeSelectedVisibility">可见范围</button></view>
     <view wx:else class="fixed-album-bar single-action"><view class="upload-button tap" bindtap="createPhoto">＋ 上传图片</view></view>
   </block>
 </view>

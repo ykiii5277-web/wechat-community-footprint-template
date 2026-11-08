@@ -1,6 +1,7 @@
 {
   "__usePrivacyCheck__": true,
   "pages": [
+    "pages/profile/intro-editor",
     "pages/fun/index",
     "pages/footprints/index",
     "pages/other-footprints/index",
@@ -9,15 +10,8 @@
     "pages/camp/detail",
     "pages/camp/stages",
     "pages/camp/subcamps",
-    "pages/companions/index",
-    "pages/companions/editor",
-    "pages/album/index",
-    "pages/album/editor",
-    "pages/album/folder-editor",
     "pages/photo/preview",
-    "pages/growth/index",
-    "pages/growth/editor",
-    "pages/growth/detail",
+    "pages/media/image-viewer",
     "pages/friends/index",
     "pages/friends/editor",
     "pages/friends/requests",
@@ -29,20 +23,18 @@
     "pages/friends/content",
     "pages/profile/index",
     "pages/profile/intro",
-    "pages/profile/intro-editor",
     "pages/profile/favorites",
     "pages/profile/backpack",
     "pages/profile/gift",
     "pages/profile/tasks",
-    "pages/profile/shop",
     "pages/profile/mailbox",
     "pages/profile/admin-rewards",
+    "pages/profile/work-review",
     "pages/profile/settings",
     "pages/profile/developer",
     "pages/profile/works",
     "pages/profile/work-detail",
-    "pages/profile/work-editor",
-    "pages/community/detail"
+    "pages/profile/work-editor"
   ],
   "window": {
     "backgroundColor": "#F8F5ED",
@@ -56,13 +48,69 @@
     "backgroundColor": "#FFFCF6",
     "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/fun/index", "text": "动态" },
-      { "pagePath": "pages/footprints/index", "text": "足迹" },
-      { "pagePath": "pages/friends/index", "text": "好友" },
-      { "pagePath": "pages/profile/index", "text": "我的" }
+      {
+        "pagePath": "pages/fun/index",
+        "text": "趣闻"
+      },
+      {
+        "pagePath": "pages/footprints/index",
+        "text": "足迹"
+      },
+      {
+        "pagePath": "pages/friends/index",
+        "text": "好友"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
     ]
+  },
+  "networkTimeout": {
+    "uploadFile": 600000,
+    "downloadFile": 600000
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",
-  "usingComponents": {}
+  "usingComponents": {
+    "feature-guide-overlay": "/components/feature-guide-overlay/index"
+  },
+  "subPackages": [
+    {
+      "root": "packages/camps",
+      "pages": [
+        "camp-detail",
+        "friend-camp"
+      ]
+    },
+    {
+      "root": "pages/album",
+      "pages": [
+        "index",
+        "editor",
+        "folder-editor"
+      ]
+    },
+    {
+      "root": "pages/community",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/growth",
+      "pages": [
+        "index",
+        "editor",
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/companions",
+      "pages": [
+        "index",
+        "editor"
+      ]
+    }
+  ]
 }

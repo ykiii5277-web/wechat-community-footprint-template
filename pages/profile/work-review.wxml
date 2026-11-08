@@ -1,0 +1,26 @@
+<view class="page-shell review-page">
+  <page-nav title="作品附件审核"></page-nav>
+  <view class="review-note">这里仅列出申请公开的视频和文档。审核通过前仅作者可见，请查看完整附件后再处理。</view>
+  <view wx:if="{{loading}}" class="review-state">正在读取…</view>
+  <view wx:elif="{{error}}" class="review-state tap" bindtap="refresh">{{error}} · 点击重试</view>
+  <view wx:elif="{{!items.length}}" class="review-state">暂无待审核的公开附件</view>
+  <view wx:for="{{items}}" wx:key="recordId" class="review-card card">
+    <view class="review-title">{{item.title}}</view>
+    <view class="review-meta">作者 UID {{item.ownerUid}} · {{item.fileName}}</view>
+    <view wx:if="{{item.body}}" class="review-body">{{item.body}}</view>
+    <video wx:if="{{item.isVideo && !rejecting}}" class="review-video" src="{{item.fileUrl}}" controls="{{true}}" object-fit="contain"></video>
+    <view wx:elif="{{!item.isVideo}}" class="review-open tap" data-id="{{item.recordId}}" bindtap="openFile">查看附件 ›</view>
+    <checkbox-group data-id="{{item.recordId}}" bindchange="checked"><label class="review-check"><checkbox value="checked" checked="{{item.checked}}" color="#1F513E"/>已查看完整附件并核对内容</label></checkbox-group>
+    <view class="review-actions"><button disabled="{{busy}}" data-id="{{item.recordId}}" data-decision="rejected" bindtap="review">不通过</button><button class="approve" disabled="{{busy || !item.checked}}" data-id="{{item.recordId}}" data-decision="approved" bindtap="review">通过审核</button></view>
+  </view>
+  <view wx:if="{{rejecting}}" class="rejection-mask">
+    <view class="rejection-dialog card">
+      <view class="review-title">确认不通过？</view>
+      <view class="review-meta rejection-work">{{rejecting.title || rejecting.fileName}}</view>
+      <view class="rejection-hint">原因选填。确认后将通过邮箱通知作者，作品继续仅作者可见。</view>
+      <textarea class="rejection-input" value="{{rejectionReason}}" bindinput="reasonInput" maxlength="200" disabled="{{busy}}" placeholder="填写不通过的原因（选填）" cursor-spacing="30"></textarea>
+      <view class="rejection-count">{{rejectionReason.length}} / 200</view>
+      <view class="review-actions"><button disabled="{{busy}}" bindtap="cancelRejection">取消</button><button disabled="{{busy}}" loading="{{busy}}" bindtap="confirmRejection">确认不通过</button></view>
+    </view>
+  </view>
+</view>

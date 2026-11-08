@@ -3,5 +3,6 @@
     <image class="nav-icon-image nav-icon-{{item.key}}" src="{{item.icon}}" mode="aspectFit"></image>
     <view class="tabbar-label">{{item.text}}</view>
     <view wx:if="{{item.key === 'friends' && badge}}" class="tabbar-badge">{{badge > 99 ? '99+' : badge}}</view>
+    <view wx:if="{{item.key === 'profile' && reviewBadge}}" class="tabbar-badge">{{reviewBadge > 99 ? '99+' : reviewBadge}}</view>
   </view>
 </view>

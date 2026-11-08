@@ -1,12 +1,14 @@
-.footprints-page { min-height: 100vh; padding: 0 26rpx 32rpx; box-sizing: border-box; background: #F8F5ED; }
+.footprints-scroll { height:100vh; background:#F8F5ED; }
+.footprints-page { min-height:100%; padding:0 26rpx calc(230rpx + env(safe-area-inset-bottom)); box-sizing:border-box; background:#F8F5ED; }
+.footprints-page.is-guided { padding-bottom:calc(530rpx + env(safe-area-inset-bottom)); }
 .topline { display:flex; justify-content:space-between; align-items:center; margin: 9rpx 4rpx 20rpx; }.profile-dot { width:64rpx; height:64rpx; line-height:64rpx; text-align:center; border-radius:50%; color:#fff; font-weight:700; background:linear-gradient(135deg,#315F51,#A7C8C0); box-shadow:0 5rpx 13rpx rgba(31,81,62,.2); }.other-footprints-link { position:absolute; z-index:8; top:18rpx; right:18rpx; display:flex; align-items:center; gap:5rpx; padding:11rpx 14rpx 11rpx 12rpx; border:1rpx solid rgba(53,99,76,.18); border-radius:99rpx; color:#28523E; background:rgba(255,253,247,.92); box-shadow:0 5rpx 13rpx rgba(39,70,52,.12); font-size:21rpx; font-weight:700; white-space:nowrap; }.other-route-icon { display:flex; align-items:center; justify-content:center; width:25rpx; height:25rpx; border-radius:50%; color:#fff; background:#4B8062; font-size:20rpx; line-height:1; }
 .other-route-notice { position:absolute; z-index:2; top:-12rpx; right:-9rpx; display:flex; align-items:center; justify-content:center; width:31rpx; height:31rpx; border:3rpx solid #fff; border-radius:50%; color:#fff; background:#D9534F; box-shadow:0 3rpx 8rpx rgba(122,45,41,.28); font-size:22rpx; font-weight:700; }
-.journey-map { position:relative; overflow:hidden; border-radius:26rpx; background:#E7ECE3; box-shadow:0 10rpx 32rpx rgba(39,70,52,.09); }
-.journey-map-image { display:block; width:100%; height:auto; }
+.journey-map { position:relative; height:0; padding-bottom:177.68%; overflow:hidden; border-radius:26rpx; background:#E7ECE3; box-shadow:0 10rpx 32rpx rgba(39,70,52,.09); }
+.journey-map-image { position:absolute; top:0; left:0; display:block; width:100%; height:100%; }
 
 /*
  * 图钉和标签的坐标按足迹地图上的路径依次排布。
- * 四个主要活动分类的位置与界面标注一一对应。
+ * 乡村、夏令营、志愿服务的位置对应界面标注；社会实践保持原位。
  */
 .journey-stop { position:absolute; z-index:4; width:250rpx; }
 .stop-rural { top:14%; left:22rpx; }

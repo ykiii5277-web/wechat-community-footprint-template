@@ -4,16 +4,17 @@ const data = require('../../utils/data');
 Page({
   data: { winterHasContent: false, sparkHasContent: false, otherHasContent: false },
   onShow() {
+    const [winterHasContent, sparkHasContent, otherHasContent] = data.getJourneyNotices(
+      ['winter', 'spark', 'other'].map(campId => ({ campId }))
+    ).map(flags => Object.values(flags).some(Boolean));
     this.setData({
-      winterHasContent: data.hasJourneyEdits({ campId: 'winter' }),
-      sparkHasContent: data.hasJourneyEdits({ campId: 'spark' }),
-      otherHasContent: data.hasJourneyEdits({ campId: 'other' })
+      winterHasContent, sparkHasContent, otherHasContent
     });
   },
   openCamp(e) {
     const campId = e.currentTarget.dataset.id;
     if (campId === 'other') return wx.navigateTo({ url: '/pages/activities/index' });
-    wx.navigateTo({ url: `/pages/camp/detail?campId=${encodeURIComponent(campId)}` });
+    wx.navigateTo({ url: `/packages/camps/camp-detail?campId=${encodeURIComponent(campId)}` });
   },
   backToFootprints() { wx.switchTab({ url: '/pages/footprints/index' }); },
   switchTo(e) { wx.switchTab({ url: e.currentTarget.dataset.path }); }

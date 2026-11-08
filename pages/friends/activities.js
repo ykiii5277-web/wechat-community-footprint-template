@@ -22,6 +22,6 @@ Page({
   },
   openActivity(e) {
     const name = data.normalizeActivityName(e.currentTarget.dataset.name);
-    nav.go(`/pages/friends/camp?id=${encodeURIComponent(this.uid)}&campId=other&activityName=${encodeURIComponent(name)}`);
+    nav.go(`/packages/camps/friend-camp?id=${encodeURIComponent(this.uid)}&campId=other&activityName=${encodeURIComponent(name)}`);
   }
 });

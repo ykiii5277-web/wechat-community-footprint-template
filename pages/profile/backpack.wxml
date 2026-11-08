@@ -1,12 +1,12 @@
 <view class="page-shell backpack-page">
   <page-nav title="背包" subtitle="把心意送给想感谢的人"></page-nav>
-  <view wx:if="{{items.length}}" class="item-list">
+  <view wx:if="{{items.length}}" class="item-list {{guideStep && guideStep.id === 'backpack' ? 'feature-guide-focus' : ''}}">
     <view wx:for="{{items}}" wx:key="id" class="item-card card">
       <image class="item-image" src="{{item.image}}" mode="aspectFill"></image>
-      <view class="item-copy"><view class="item-heading"><text>{{item.name}}</text><view>× {{item.count}}</view></view><view class="item-intro">{{item.intro}}</view><view class="received">累计收到 {{item.received}} 个</view></view>
-      <view class="gift-button tap {{item.count ? '' : 'disabled'}}" data-id="{{item.id}}" bindtap="gift">赠送</view>
+      <view class="item-copy"><view class="item-heading"><text>{{item.name}}</text><view>{{item.pending ? '待确认' : '× ' + item.count}}</view></view><view class="item-intro">{{item.intro}}</view><view class="received">累计收到 {{item.received}} 个</view></view>
+      <view class="gift-button tap {{item.count || item.pending ? '' : 'disabled'}}" data-id="{{item.id}}" bindtap="gift">{{item.pending ? '确认结果' : '赠送'}}</view>
     </view>
   </view>
-  <view wx:elif="{{!loading}}" class="empty card">背包里暂时没有可赠送的道具</view>
-  <view class="shop-link tap" bindtap="shop">前往商店直接购买道具 ›</view>
+  <view wx:elif="{{!loading}}" class="empty card {{guideStep && guideStep.id === 'backpack' ? 'feature-guide-focus' : ''}}">背包里暂时没有可赠送的道具</view>
 </view>
+<feature-guide-overlay wx:if="{{guideStep}}" step="{{guideStep}}" index="{{guideIndex}}" total="{{guideTotal}}"></feature-guide-overlay>

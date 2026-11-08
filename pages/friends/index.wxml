@@ -1,10 +1,32 @@
+<template name="friend-row">
+  <view class="friend-card tap" data-id="{{item.id}}" bindtap="open">
+    <view class="friend-avatar tone-{{item.tone}}"><image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" style="transform: translate({{item.avatarOffsetX}}rpx, {{item.avatarOffsetY}}rpx) scale({{item.avatarScale}});"></image><text wx:else>{{item.initial}}</text></view>
+    <view class="friend-copy"><view class="friend-name">{{item.displayName}}</view><view class="affection-line">Lv.{{item.affection.level}} · {{item.affection.title}} · {{item.affection.points || 0}} 好感</view><view class="friend-bio">{{item.displayMeta}}</view></view>
+    <view wx:if="{{item.unreadCount}}" class="chat-unread">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
+    <picker class="friend-group-picker" range="{{groups}}" range-key="name" value="{{item.groupIndex}}" disabled="{{managementBusy}}" data-uid="{{item.uid || item.id}}" bindchange="moveFriend" catchtap="prepareGroupMove"><view class="friend-group-button">分组⌄</view></picker>
+  </view>
+</template>
 <view class="friends-page">
-  <view class="safe-top"></view>
-  <view class="friends-heading"><view><view class="page-title">好友</view><view class="page-subtitle">与同行的人，分享彼此的成长</view></view><view class="friend-header-actions"><view class="friend-message tap" bindtap="openUnread">消息<text wx:if="{{messageCount}}">{{messageCount}}</text></view><view class="friends-count">{{friends.length}} 位</view></view></view>
-  <view class="request-row card tap" bindtap="requests"><view class="request-copy"><view>好友申请</view><text>查看申请，也可直接在下方处理</text></view><view class="request-badge" wx:if="{{requestCount}}">{{requestCount}}</view><view class="friend-arrow">›</view></view>
-  <view wx:if="{{pendingRequests.length}}" class="quick-request-list"><view wx:for="{{pendingRequests}}" wx:key="id" class="quick-request card"><view class="quick-request-avatar"><image wx:if="{{item.fromAvatar}}" src="{{item.fromAvatar}}" mode="aspectFill" style="transform: translate({{item.fromAvatarOffsetX}}rpx, {{item.fromAvatarOffsetY}}rpx) scale({{item.fromAvatarScale}});"></image><text wx:else>{{item.initial}}</text></view><view class="quick-request-copy"><view>{{item.fromName}}</view><text>UID {{item.fromUid}}</text></view><view class="quick-reject tap" data-id="{{item.id}}" catchtap="reject">拒绝</view><view class="quick-accept tap" data-id="{{item.id}}" catchtap="accept">同意</view></view></view>
-  <view class="friend-section-heading"><view class="section-label">我的好友</view><view class="affection-guide-button tap" bindtap="showAffectionGuide">好感等级说明</view></view>
-  <view wx:if="{{friends.length}}" class="friend-list"><view wx:for="{{friends}}" wx:key="id" class="friend-card card tap" data-id="{{item.id}}" bindtap="open"><view class="friend-avatar tone-{{item.tone}}"><image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" style="transform: translate({{item.avatarOffsetX}}rpx, {{item.avatarOffsetY}}rpx) scale({{item.avatarScale}});"></image><text wx:else>{{item.initial}}</text></view><view class="friend-copy"><view class="friend-name">{{item.displayName}}</view><view class="affection-line">Lv.{{item.affection.level}} · {{item.affection.title}}</view><view class="friend-bio">{{item.displayMeta}}</view></view><view wx:if="{{item.unreadCount}}" class="chat-unread">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view><view class="friend-arrow">›</view></view></view>
-  <view wx:else class="empty">还没有好友。<view>点击下方按钮，填写对方 UID 发起申请吧。</view></view>
-  <view class="friend-add-bar"><view class="friend-add tap" bindtap="create">＋ 添加好友</view></view>
+  <view class="safe-top" style="height:{{statusBarHeight}}px"></view>
+  <view class="friends-heading"><view><view class="page-title">好友</view><view class="page-subtitle">与同行的人，分享彼此的成长</view></view><view class="friend-header-actions" style="margin-top:{{headerActionOffset}}px"><view class="friend-message tap" bindtap="openUnread">消息<text wx:if="{{messageCount}}">{{messageCount}}</text></view><view class="friends-count">{{friendCount}} 位</view></view></view>
+  <view class="friend-entry-actions">
+    <view class="friend-entry card tap {{guideStep && guideStep.id === 'friends' ? 'feature-guide-focus' : ''}}" bindtap="create"><view class="friend-entry-icon">＋</view><view class="friend-entry-copy"><view>添加好友</view><text>填写 UID 和申请说明</text></view><view class="friend-entry-arrow">›</view></view>
+    <view class="friend-entry card tap" bindtap="requests"><view class="friend-entry-icon">♧</view><view class="friend-entry-copy"><view>好友申请</view><text>查看与处理好友申请</text></view><view class="request-badge" wx:if="{{requestCount}}">{{requestCount > 99 ? '99+' : requestCount}}</view><view class="friend-entry-arrow">›</view></view>
+  </view>
+  <view wx:if="{{requestCount}}" class="quick-request-list"><view wx:for="{{pendingRequests}}" wx:key="id" class="quick-request card"><view class="quick-request-avatar"><image wx:if="{{item.fromAvatar}}" src="{{item.fromAvatar}}" mode="aspectFill" style="transform: translate({{item.fromAvatarOffsetX}}rpx, {{item.fromAvatarOffsetY}}rpx) scale({{item.fromAvatarScale}});"></image><text wx:else>{{item.initial}}</text></view><view class="quick-request-copy"><view>{{item.fromName}}</view><text>UID {{item.fromUid}}</text></view><view class="quick-reject tap" data-id="{{item.id}}" catchtap="reject">拒绝</view><view class="quick-accept tap" data-id="{{item.id}}" catchtap="accept">同意</view></view></view>
+  <view class="friend-tabs"><view class="friend-tab {{activeTab === 'friends' ? 'active' : ''}}" data-tab="friends" bindtap="chooseTab">好友<text>{{friendCount}}</text></view><view class="friend-tab {{activeTab === 'groups' ? 'active' : ''}}" data-tab="groups" bindtap="chooseTab">分组</view></view>
+  <view class="friend-toolbar"><picker range="{{sortOptions}}" range-key="name" value="{{sortIndex}}" disabled="{{managementBusy}}" bindchange="sortChange"><view class="friend-sort">{{sortName}} <text>⌄</text></view></picker><view wx:if="{{activeTab === 'groups'}}" class="create-group tap" bindtap="createGroup">＋ 新建分组</view><view wx:else class="affection-guide-button tap" bindtap="showAffectionGuide">好感等级说明</view></view>
+  <view wx:if="{{activeTab === 'friends'}}">
+    <view class="friend-sort-note">{{sortIndex === 0 ? '按好友昵称排序（中文按拼音）' : sortIndex === 1 ? '好感度从高到低' : '最新添加的好友在前'}}</view>
+    <view wx:if="{{friendCount}}" class="friend-list card"><block wx:for="{{friends}}" wx:key="id"><template is="friend-row" data="{{item: item, groups: groups, managementBusy: managementBusy}}"/></block></view>
+    <view wx:else class="empty">{{loading ? '正在加载好友…' : '还没有好友'}}<view wx:if="{{!loading}}">点击上方“添加好友”，填写对方 UID 发起申请吧。</view></view>
+  </view>
+  <view wx:else class="friend-groups">
+    <view class="friend-sort-note">分组仅自己可见；点击好友右侧“分组”即可调整。</view>
+    <view wx:for="{{groups}}" wx:key="id" wx:for-item="group" class="friend-group card">
+      <view class="friend-group-heading tap" data-id="{{group.id}}" bindtap="toggleGroup"><text class="group-chevron">{{group.expanded ? '⌄' : '›'}}</text><view class="group-title">{{group.name}}<text wx:if="{{group.isDefault}}" class="default-group">默认</text></view><text class="group-count">{{group.count}} 位</text><view class="group-menu" data-id="{{group.id}}" catchtap="groupMenu">•••</view></view>
+      <view wx:if="{{group.expanded}}" class="group-members"><block wx:if="{{group.count}}"><block wx:for="{{group.friends}}" wx:key="id"><template is="friend-row" data="{{item: item, groups: groups, managementBusy: managementBusy}}"/></block></block><view wx:else class="group-empty">这个分组还没有好友</view></view>
+    </view>
+  </view>
 </view>
+<feature-guide-overlay wx:if="{{guideStep}}" step="{{guideStep}}" index="{{guideIndex}}" total="{{guideTotal}}"></feature-guide-overlay>

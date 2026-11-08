@@ -1,7 +1,7 @@
 <view class="nav">
-  <view class="safe"></view>
-  <view class="nav-row">
-    <view class="back tap" bindtap="back" aria-label="返回">‹</view>
+  <view class="safe" style="height:{{statusBarHeight}}px"></view>
+  <view class="nav-row" style="height:{{navHeight}}px">
+    <view wx:if="{{showBack}}" class="back tap" bindtap="back" aria-label="返回">‹</view><view wx:else class="nav-space"></view>
     <view class="nav-heading">
       <view class="nav-title">{{title}}</view>
       <view wx:if="{{subtitle}}" class="nav-subtitle">{{subtitle}}</view>

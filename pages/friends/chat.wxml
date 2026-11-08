@@ -2,6 +2,7 @@
   <page-nav title="好友聊天" subtitle="{{friend ? friend.displayName : '正在连接'}}"></page-nav>
   <view wx:if="{{friend}}" class="chat-friend"><view class="chat-friend-avatar"><image wx:if="{{friend.avatar}}" src="{{friend.avatar}}" mode="aspectFill" style="transform: translate({{friend.avatarOffsetX}}rpx, {{friend.avatarOffsetY}}rpx) scale({{friend.avatarScale}});"></image><text wx:else>{{friend.initial}}</text></view><view><view>{{friend.displayName}}</view><text>UID {{friend.uid || friend.id}}</text></view></view>
   <scroll-view class="chat-scroll" scroll-y="{{true}}" scroll-into-view="{{scrollTarget}}" scroll-with-animation="{{true}}">
+    <view wx:if="{{hasMore}}" class="load-older tap" bindtap="loadOlder">{{loadingOlder ? '正在加载…' : '加载更早的消息'}}</view>
     <view wx:if="{{unavailable}}" class="chat-state">聊天服务尚未连接。<view>请确认已部署 hui-api 云函数并使用同一云环境。</view></view>
     <view wx:elif="{{!messages.length}}" class="chat-state">还没有聊天记录。<view>向好友发送第一句问候吧。</view></view>
     <view wx:for="{{messages}}" wx:key="id" wx:for-item="item" id="message-{{item.id}}" class="message-row {{item.isMine ? 'mine' : 'other'}}">

@@ -27,4 +27,5 @@ page {
 .btn-soft::after { border: 0; }
 .star { color: #D6A54A; font-size: 35rpx; line-height: 1; }
 .bottom-space { height: 26rpx; }
+.feature-guide-focus.feature-guide-focus { z-index:30; box-shadow:0 0 0 5rpx #5EAE80,0 0 0 11rpx rgba(94,174,128,.22),0 10rpx 30rpx rgba(39,70,52,.15) !important; border-radius:18rpx; }
 .image-preview-tip { padding: 12rpx 20rpx; color: #7E8B82; background: #F8F6EF; font-size: 20rpx; text-align: center; }

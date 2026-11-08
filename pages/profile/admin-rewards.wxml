@@ -22,5 +22,18 @@
     <view wx:if="{{progressText}}" class="progress-card card"><view>{{progressText}}</view><text wx:if="{{processed}}">新增 {{created}} · 跳过 {{skipped}}</text></view>
     <button class="send-button" loading="{{sending}}" disabled="{{sending || (scope === 'all' && !totalUsers)}}" bindtap="send">{{sending ? '正在发放' : (scope === 'all' ? '向全部用户发放' : '向指定 UID 发放')}}</button>
     <view class="security-note">该入口仅对云端标记的管理员账号显示。发放记录以独立邮箱文档保存，请勿直接修改用户背包。</view>
+    <view class="cleanup-card card">
+      <view class="cleanup-title">按 UID 删除账号</view>
+      <view class="cleanup-note">仅管理员可操作。先查询并核对账号，再删除其资料及关联数据；操作不可恢复。不能删除当前管理员或其他管理员账号。</view>
+      <view class="field-label">要删除的账号 UID</view>
+      <input class="text-input" type="number" maxlength="7" value="{{deletionUid}}" bindinput="deletionUidInput" placeholder="填写 7 位 UID"/>
+      <button class="cleanup-preview-button" loading="{{previewingDeletion}}" disabled="{{previewingDeletion || deletingAccount}}" bindtap="previewDeletion">查询并核对账号</button>
+      <block wx:if="{{deletionTarget}}">
+        <view class="cleanup-target">待删除：{{deletionTarget.name}}（UID {{deletionTarget.uid}}）</view>
+        <view class="field-label">再次输入 UID 确认</view>
+        <input class="text-input" type="number" maxlength="7" value="{{deletionConfirmUid}}" bindinput="deletionConfirmInput" placeholder="再次填写相同的 7 位 UID"/>
+        <button class="cleanup-button" loading="{{deletingAccount}}" disabled="{{deletingAccount || deletionConfirmUid !== deletionTarget.uid}}" bindtap="deleteAccount">彻底删除此 UID 的账号</button>
+      </block>
+    </view>
   </block>
 </view>

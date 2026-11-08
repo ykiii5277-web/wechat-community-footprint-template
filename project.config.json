@@ -3,17 +3,71 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
     "ignore": [
-      { "type": "folder", "value": "codex-build-resources" },
-      { "type": "file", "value": "codex-build-resources.zip" },
-      { "type": "folder", "value": "docs" },
-      { "type": "file", "value": "CLOUD_SETUP.md" },
-      { "type": "file", "value": "README_初学者.md" },
-      { "type": "file", "value": "VIRTUAL_PAYMENT_SETUP.md" }
+      {
+        "type": "folder",
+        "value": "tests"
+      },
+      {
+        "type": "folder",
+        "value": "scripts"
+      },
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "folder",
+        "value": ".github"
+      },
+      {
+        "type": "folder",
+        "value": "codex-build-resources"
+      },
+      {
+        "type": "folder",
+        "value": "文件"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "file",
+        "value": "README_初学者.md"
+      },
+      {
+        "type": "file",
+        "value": "CLOUD_SETUP.md"
+      },
+      {
+        "type": "file",
+        "value": "CHANGELOG.md"
+      },
+      {
+        "type": "file",
+        "value": "LICENSE"
+      },
+      {
+        "type": "file",
+        "value": "package.json"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": ".gitignore"
+      },
+      {
+        "type": "file",
+        "value": "codex-build-resources.zip"
+      }
     ],
     "include": []
   },
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": true,
     "enhance": true,
     "postcss": true,
@@ -40,5 +94,6 @@
   "appid": "touristappid",
   "projectname": "同行足迹模板",
   "simulatorPluginLibVersion": {},
-  "editorSetting": {}
+  "editorSetting": {},
+  "isGameTourist": false
 }

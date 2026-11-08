@@ -1,8 +1,9 @@
 const cloud = require('../../utils/cloud-service');
+const featureGuide = require('../../utils/feature-guide');
 
 Page({
   data: { tasks: [], weekly: null, perfectWeek: null, date: '', loading: true },
-  onShow() { this.refresh(); },
+  onShow() { this.refresh(); featureGuide.syncPage(this); },
   async refresh() {
     this.setData({ loading: true });
     const result = await cloud.getTaskStatus();

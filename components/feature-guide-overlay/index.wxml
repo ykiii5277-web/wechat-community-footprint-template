@@ -1,0 +1,7 @@
+<view wx:if="{{step && step.id}}" class="feature-guide-panel at-{{step.placement}} {{step.tabPage ? 'with-tab' : ''}} {{step.id === 'intro' ? 'avoid-edit' : ''}}" style="transform:{{step.placement === 'center' ? 'translate(-50%, -50%)' : 'translateX(-50%)'}} translate3d({{dragX}}px, {{dragY}}px, 0)" bindtouchstart="dragStart" catchtouchmove="dragMove" bindtouchend="dragEnd" bindtouchcancel="dragEnd">
+  <view class="feature-guide-topline"><view class="feature-guide-count">功能引导　{{index + 1}} / {{total}}</view><view class="feature-guide-drag-hint">↕ 按住拖动</view><view class="feature-guide-skip" bindtap="skip">跳过 ×</view></view>
+  <view class="feature-guide-title">{{step.title}}</view>
+  <view class="feature-guide-target">请看页面中的「{{step.target}}」</view>
+  <view class="feature-guide-points"><view wx:for="{{step.points}}" wx:key="*this" class="feature-guide-point"><text>•</text><view>{{item}}</view></view></view>
+  <view class="feature-guide-actions"><view class="feature-guide-back {{index === 0 ? 'disabled' : ''}}" bindtap="previous">上一步</view><view class="feature-guide-next" bindtap="next">{{index + 1 === total ? '完成引导' : '下一步'}}</view></view>
+</view>

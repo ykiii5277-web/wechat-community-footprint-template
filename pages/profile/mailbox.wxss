@@ -13,3 +13,5 @@
 .feedback-tags text,.feedback-chip{padding:5rpx 11rpx;border-radius:99rpx;color:#39725C;background:#E3F0E7;font-size:18rpx}
 .feedback-content{margin-top:14rpx;padding:16rpx;border-left:5rpx solid #4A9274;border-radius:9rpx;color:#344F41;background:#F3F7F2;font-size:23rpx;white-space:pre-wrap}
 .feedback-state{padding:9rpx 17rpx;border-radius:99rpx;color:#39725C;background:#E3F0E7;font-size:20rpx}
+.review-mail-body{white-space:pre-wrap;overflow-wrap:anywhere}
+.review-mail-reason{margin:10rpx 0}.review-reason-text{font-weight:700;color:#344F41}

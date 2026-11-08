@@ -1,17 +1,21 @@
-<view wx:if="{{item}}" class="page-shell community-detail">
+<view class="page-shell community-detail {{publicBrowseEnabled ? 'has-content-browser' : ''}}">
   <page-nav title="{{pageTitle}}"></page-nav>
+  <block wx:if="{{item}}">
   <view class="community-card card">
-    <view wx:if="{{item.kind === 'photo' && item.image}}" class="community-image"><image class="tap" src="{{item.image}}" mode="aspectFit" data-index="0" bindtap="previewImage"></image></view>
+    <video wx:if="{{item.kind === 'work' && item.isVideo && item.videoUrl}}" class="community-video" src="{{item.videoUrl}}" controls="{{true}}" show-fullscreen-btn="{{true}}" object-fit="contain"></video>
+    <view wx:elif="{{item.kind === 'photo' && item.image}}" class="community-image"><image class="tap" src="{{item.image}}" mode="aspectFit" data-index="0" bindtap="previewImage"></image></view>
     <view wx:elif="{{item.kind === 'growth' && item.images.length}}" class="community-grid"><image wx:for="{{item.images}}" wx:key="*this" class="tap" src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="previewImage"></image></view>
     <view wx:elif="{{item.kind === 'companion' && item.avatar}}" class="community-image"><image class="tap" src="{{item.avatar}}" mode="aspectFit" data-index="0" bindtap="previewImage"></image></view>
     <view wx:else class="community-placeholder">{{item.kind === 'work' ? '▤' : '✦'}}</view>
     <view wx:if="{{(item.kind === 'photo' && item.image) || (item.kind === 'growth' && item.images.length) || (item.kind === 'companion' && item.avatar)}}" class="image-preview-tip">点击查看大图 · 双指缩放 · 长按保存</view>
     <view class="community-copy">
-      <view class="community-title">{{item.kind === 'photo' && !item.showName ? '相册中的一段记忆' : (item.title || item.name || '一段公开记忆')}}</view>
-      <view class="community-owner">{{item.ownerName}} · {{campName}}</view>
+      <view class="community-title">{{item.kind === 'photo' && item.visibility === 'public' ? (item.name || item.title || '未命名图片') : (item.kind === 'photo' && !item.showName ? '相册中的一段记忆' : (item.title || item.name || '一段公开记忆'))}}</view>
+      <view wx:if="{{campName}}" class="community-owner">{{campName}}</view>
       <view wx:if="{{item.kind === 'growth' && item.location}}" class="community-location">⌖ {{item.location}}</view>
       <view wx:if="{{item.body}}" class="community-body">{{item.body}}</view><view wx:elif="{{item.introduction}}" class="community-body">{{item.introduction}}</view><view wx:if="{{item.story}}" class="community-story">{{item.story}}</view>
-      <view wx:if="{{item.fileName}}" class="community-file tap" bindtap="openFile">▤ {{item.fileName}}　打开 ›</view>
+      <view wx:if="{{item.fileName && !item.isVideo}}" class="community-file tap" bindtap="openFile">▤ {{item.fileName}}　打开 ›</view>
+      <view wx:if="{{item.isVideo && !item.videoUrl}}" class="community-file tap" bindtap="openFile">播放视频 ›</view>
+      <view wx:if="{{item.isVideo && item.filePath && !loadingContent}}" class="community-file tap" bindtap="saveVideo">保存视频到相册</view>
       <view class="community-meta">{{item.date}}　·　👁 {{item.views}}　·　♥ {{item.likes}}</view>
       <view class="community-status"><view class="community-public">{{item.visibilityLabel}}</view><view wx:if="{{item.ownerUid}}" class="community-author-uid">作者 UID {{item.ownerUid}}</view></view>
     </view>
@@ -39,5 +43,17 @@
     <view wx:else class="community-no-comment">还没有评论，写下第一句吧。</view>
     <view wx:if="{{replyTarget}}" class="reply-banner">正在回复 @{{replyTarget.name}}<text class="tap" bindtap="cancelReply">取消</text></view>
     <view class="community-composer"><input placeholder="{{commentPlaceholder}}" maxlength="240" value="{{commentBody}}" focus="{{commentFocus}}" bindinput="commentInput" bindblur="commentBlur" confirm-type="send" bindconfirm="submitComment"/><view class="tap" bindtap="submitComment">发送</view></view>
+  </view>
+  </block>
+  <view wx:else class="content-load-state">{{loadingContent ? '正在加载内容…' : '这条内容暂不可查看，可返回列表或继续浏览其他内容。'}}</view>
+  <view wx:if="{{publicBrowseEnabled}}" class="content-browser">
+    <view class="browse-actions">
+      <button class="browse-button browse-first" disabled="{{browseLoading || !browsePrevious}}" bindtap="firstContent">首条</button>
+      <button class="browse-button browse-previous" disabled="{{browseLoading || !browsePrevious}}" bindtap="previousContent">‹ 上一条</button>
+      <button class="browse-button browse-jump" disabled="{{browseLoading}}" bindtap="jumpContent">跳转</button>
+      <button class="browse-button browse-next" disabled="{{browseLoading || !browseNext}}" bindtap="nextContent">下一条 ›</button>
+      <button class="browse-button browse-last" disabled="{{browseLoading || !browseNext}}" bindtap="lastContent">末条</button>
+    </view>
+    <view class="browse-status">{{browseLoading ? '正在切换…' : '第 ' + browsePosition + ' / ' + browseTotal + ' 条'}}</view>
   </view>
 </view>

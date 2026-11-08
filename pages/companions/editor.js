@@ -6,14 +6,15 @@ const privacy = require('../../utils/privacy');
 
 Page({
   data: { id: '', context: {}, name: '', avatar: '', avatarScale: 1.3, avatarOffsetX: 0, avatarOffsetY: 0, avatarCropVisible: false, avatarCropSource: '', avatarCropScale: 1, avatarCropOffsetX: 0, avatarCropOffsetY: 0, genders: ['男', '女', '不透露'], genderIndex: 2, genderName: '不透露', introduction: '', story: '', visibilityOptions: [], visibilityIndex: 1, visibilityName: '仅好友可见', visibilityHint: '' },
-  onLoad(options) {
-    const companion = options.id ? data.getCompanion(options.id) : null;
-    const context = Object.assign(nav.contextFrom(options), companion ? { activityName: companion.activityName || '' } : {});
+async onLoad(options) { await require('../../utils/actions').ready();
+    const companion = options.id ? data.getCompanion(options.id) : data.getSyncDraft(nav.decode(options.draftKey));
+    const context = Object.assign(nav.contextFrom(options), companion ? { campId: companion.campId, stageId: companion.stageId || '', subcampId: companion.subcampId || '', activityName: companion.activityName || '' } : {});
     const genders = this.data.genders;
     const storedGenderIndex = companion ? genders.indexOf(companion.gender) : -1;
     const genderIndex = storedGenderIndex >= 0 ? storedGenderIndex : 2;
-    const visibilityOptions = data.visibilityOptions();
-    const visibilityIndex = Math.max(0, visibilityOptions.findIndex(item => item.value === (companion ? companion.visibility : 'friends')));
+    const visibilityOptions = data.visibilityOptions().filter(item => item.value !== 'public');
+    const scope = companion && companion.visibility === 'self' ? 'self' : 'friends';
+    const visibilityIndex = Math.max(0, visibilityOptions.findIndex(item => item.value === scope));
     this.setData({ id: companion ? companion.id : '', context, name: companion ? companion.name : '', avatar: companion ? companion.avatar || '' : '', avatarScale: companion && Number(companion.avatarScale) ? Number(companion.avatarScale) : 1.3, avatarOffsetX: companion && Number.isFinite(Number(companion.avatarOffsetX)) ? Number(companion.avatarOffsetX) : 0, avatarOffsetY: companion && Number.isFinite(Number(companion.avatarOffsetY)) ? Number(companion.avatarOffsetY) : 0, genderIndex, genderName: genders[genderIndex], introduction: companion ? companion.introduction : '', story: companion ? companion.story : '', visibilityOptions, visibilityIndex, visibilityName: visibilityOptions[visibilityIndex].name, visibilityHint: visibilityOptions[visibilityIndex].hint });
   },
   input(e) { this.setData({ [e.currentTarget.dataset.field]: e.detail.value }); },
@@ -34,20 +35,30 @@ Page({
   avatarCropComplete(e) { this.setData({ avatar: e.detail.tempFilePath, avatarScale: 1, avatarOffsetX: 0, avatarOffsetY: 0, avatarCropVisible: false, avatarCropSource: '' }); },
   clearAvatar() { this.setData({ avatar: '', avatarScale: 1.3, avatarOffsetX: 0, avatarOffsetY: 0 }); },
   async save() {
+    if (this._saving) return;
+    this._saving = true;
+    try {
     const name = this.data.name.trim();
     if (!name) return wx.showToast({ title: '请填写伙伴姓名', icon: 'none' });
+    this._saveId = this.data.id || this._saveId || data.newContentId('companion');
+    data.stageDraft('companion', Object.assign({}, this.data.context, { id: this._saveId, name, avatar: this.data.avatar, avatarScale: this.data.avatarScale, avatarOffsetX: this.data.avatarOffsetX, avatarOffsetY: this.data.avatarOffsetY, gender: this.data.genders[this.data.genderIndex], introduction: this.data.introduction, story: this.data.story, visibility: this.data.visibilityOptions[this.data.visibilityIndex].value }));
     let avatar = this.data.avatar;
     wx.showLoading({ title: '正在保存' });
     try {
       if (avatar && !cloud.isRemoteFile(avatar)) avatar = await cloud.persistFile(avatar, 'companion-avatars');
     } catch (error) {
       wx.hideLoading();
-      return cloud.showUploadError(error, '头像上传失败');
+      return cloud.showUploadError(error, '头像上传失败', () => this.save());
     }
-    data.saveCompanion({ id: this.data.id, name, avatar, avatarScale: this.data.avatarScale, avatarOffsetX: this.data.avatarOffsetX, avatarOffsetY: this.data.avatarOffsetY, gender: this.data.genders[this.data.genderIndex], introduction: this.data.introduction.trim(), story: this.data.story.trim(), campId: this.data.context.campId, stageId: this.data.context.stageId, subcampId: this.data.context.subcampId, activityName: this.data.context.activityName || '', visibility: this.data.visibilityOptions[this.data.visibilityIndex].value });
+    this.setData({ avatar });
+    this._saveId = this.data.id || this._saveId || data.newContentId('companion');
+    try {
+      await data.saveCompanion({ id: this._saveId, name, avatar, avatarScale: this.data.avatarScale, avatarOffsetX: this.data.avatarOffsetX, avatarOffsetY: this.data.avatarOffsetY, gender: this.data.genders[this.data.genderIndex], introduction: this.data.introduction.trim(), story: this.data.story.trim(), campId: this.data.context.campId, stageId: this.data.context.stageId, subcampId: this.data.context.subcampId, activityName: this.data.context.activityName || '', visibility: this.data.visibilityOptions[this.data.visibilityIndex].value });
+    } catch (error) { wx.hideLoading(); return cloud.showUploadError(error, '伙伴未保存到云端', () => this.save()); }
     wx.hideLoading();
     wx.showToast({ title: '伙伴已保存', icon: 'success' });
     setTimeout(() => wx.navigateBack({ delta: 1 }), 350);
+    } finally { this._saving = false; }
   },
-  remove() { wx.showModal({ title: '删除这位伙伴？', content: '删除后无法恢复，是否继续？', confirmColor: '#C84A3A', success: result => { if (result.confirm) { data.deleteCompanion(this.data.id); wx.navigateBack({ delta: 1 }); } } }); }
+  remove() { wx.showModal({ title: '删除这位伙伴？', content: '删除后无法恢复，是否继续？', confirmColor: '#C84A3A', success: result => { if (result.confirm) require('../../utils/actions').run(this, () => data.deleteCompanion(this.data.id), '已删除', () => wx.navigateBack({ delta: 1 })); } }); }
 });

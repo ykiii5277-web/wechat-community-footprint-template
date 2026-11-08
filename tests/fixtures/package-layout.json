@@ -1,0 +1,99 @@
+{
+  "oldRoutes": [
+    "pages/profile/intro-editor",
+    "pages/fun/index",
+    "pages/footprints/index",
+    "pages/other-footprints/index",
+    "pages/activities/index",
+    "pages/activities/editor",
+    "pages/camp/detail",
+    "pages/camp/stages",
+    "pages/camp/subcamps",
+    "pages/companions/index",
+    "pages/companions/editor",
+    "pages/album/index",
+    "pages/album/editor",
+    "pages/album/folder-editor",
+    "pages/photo/preview",
+    "pages/media/image-viewer",
+    "pages/growth/index",
+    "pages/growth/editor",
+    "pages/growth/detail",
+    "pages/friends/index",
+    "pages/friends/editor",
+    "pages/friends/requests",
+    "pages/friends/detail",
+    "pages/friends/activities",
+    "pages/friends/camp",
+    "pages/friends/albums",
+    "pages/friends/chat",
+    "pages/friends/content",
+    "pages/profile/index",
+    "pages/profile/intro",
+    "pages/profile/favorites",
+    "pages/profile/backpack",
+    "pages/profile/gift",
+    "pages/profile/tasks",
+    "pages/profile/mailbox",
+    "pages/profile/admin-rewards",
+    "pages/profile/work-review",
+    "pages/profile/settings",
+    "pages/profile/developer",
+    "pages/profile/works",
+    "pages/profile/work-detail",
+    "pages/profile/work-editor",
+    "pages/community/detail"
+  ],
+  "moves": [
+    [
+      "pages/camp/detail",
+      "packages/camps/camp-detail"
+    ],
+    [
+      "pages/friends/camp",
+      "packages/camps/friend-camp"
+    ]
+  ],
+  "packages": [
+    {
+      "root": "packages/camps",
+      "pages": [
+        "camp-detail",
+        "friend-camp"
+      ]
+    },
+    {
+      "root": "pages/album",
+      "pages": [
+        "index",
+        "editor",
+        "folder-editor"
+      ]
+    },
+    {
+      "root": "pages/community",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/growth",
+      "pages": [
+        "index",
+        "editor",
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/companions",
+      "pages": [
+        "index",
+        "editor"
+      ]
+    }
+  ],
+  "hashes": {
+    "stage-camper-v1.jpg": "a2e84d56421b91f9447534b178e0685c18fe4fb841850401bd83c0c0d263008f",
+    "stage-volunteer-v1.jpg": "6b245d80d0511035527f3c751ceda0b25cae7784a114f5347899a415f3ad9651"
+  }
+}

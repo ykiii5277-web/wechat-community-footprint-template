@@ -9,7 +9,7 @@ Page({
   onShow() { if (this.data.context.campId) this.refreshContentState(); },
   refreshContentState() {
     const context = this.data.context;
-    this.setData({ hasCompanions: data.getCompanions(context).length > 0, hasAlbum: data.getPhotos(context).length > 0 || data.getFolders(context).length > 0, hasRecords: data.getGrowth(context).length > 0, hasWorks: data.getWorks(context).length > 0 });
+    this.setData({ hasCompanions: data.getCompanions(context).length > 0, hasAlbum: data.getPhotos(context).length > 0, hasRecords: data.getGrowth(context).length > 0, hasWorks: data.getWorks(context).length > 0 });
   },
   companions() { nav.go(`/pages/companions/index${nav.query(this.data.context)}`); },
   album() { nav.go(`/pages/album/index${nav.query(this.data.context)}`); },

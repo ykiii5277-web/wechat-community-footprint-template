@@ -1,10 +1,12 @@
 const cloud = require('../../utils/cloud-service');
 const catalog = require('../../utils/virtual-items');
 const nav = require('../../utils/nav');
+const featureGuide = require('../../utils/feature-guide');
+const intents = require('../../utils/request-intent');
 
 Page({
   data: { items: catalog.withCounts(), loading: true },
-  onShow() { this.refresh(); },
+  onShow() { this.refresh(); featureGuide.syncPage(this); },
   async refresh() {
     this.setData({ loading: true });
     const result = await cloud.getInventory();
@@ -14,13 +16,12 @@ Page({
     }
     const wallet = result.wallet || {};
     // 背包只展示当前可以实际赠送的库存；累计收到但已经用完的道具不占据列表。
-    const ownedItems = catalog.withCounts(wallet.items, wallet.received).filter(item => item.count > 0);
+    const ownedItems = catalog.withCounts(wallet.items, wallet.received).map(item => Object.assign({}, item, { pending: !!intents.read(`gift_${item.id}`) })).filter(item => item.count > 0 || item.pending);
     this.setData({ items: ownedItems, loading: false });
   },
   gift(e) {
     const item = this.data.items.find(value => value.id === e.currentTarget.dataset.id);
-    if (!item || item.count < 1) return wx.showToast({ title: '该道具数量不足', icon: 'none' });
+    if (!item || item.count < 1 && !item.pending) return wx.showToast({ title: '该道具数量不足', icon: 'none' });
     nav.go(`/pages/profile/gift?item=${encodeURIComponent(item.id)}`);
-  },
-  shop() { nav.go('/pages/profile/shop'); }
+  }
 });

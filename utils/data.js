@@ -16,6 +16,9 @@ const KEYS = {
   companions: 'hui_time_companions_v1',
   photos: 'hui_time_photos_v1',
   folders: 'hui_time_folders_v1',
+  pendingFolderSaves: 'hui_time_pending_folder_saves_v1',
+  pendingFolderDeletes: 'hui_time_pending_folder_deletes_v1',
+  cloudStateHydratedUid: 'hui_time_cloud_state_hydrated_uid_v1',
   activities: 'hui_time_activities_v1',
   comments: 'hui_time_comments_v1',
   contentViewHistory: 'hui_time_content_view_history_v1',
@@ -38,6 +41,9 @@ function mergeById(localItems, remoteItems) {
 function read(key, fallback) { const value = wx.getStorageSync(key); return value === '' || value == null ? fallback : value; }
 function write(key, value) { wx.setStorageSync(key, value); }
 function hasStored(key) { const value = wx.getStorageSync(key); return value !== '' && value != null; }
+function storedIds(key) { const values = read(key, []); return Array.isArray(values) ? values.map(String) : []; }
+function rememberId(key, id) { write(key, Array.from(new Set(storedIds(key).concat(String(id))))); }
+function forgetId(key, id) { write(key, storedIds(key).filter(value => value !== String(id))); }
 // 写入本地缓存后，异步镜像到云端。云函数未部署时 cloud-service 会静默回退，开发者工具仍可照常预览。
 function mirrorContent(kind, item) { return cloud.upsertContent(kind, item); }
 function today() { const d = new Date(); return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('.'); }
@@ -61,7 +67,7 @@ function normalizeActivityName(value) {
   return result;
 }
 function matchesActivity(item, context = {}) { return !context.activityName || normalizeActivityName(item.activityName) === normalizeActivityName(context.activityName); }
-// “动态”是面向所有访客的公开发现页，因此它比好友页更严格：只收录明确设为公开的内容。
+// “趣闻”是面向所有访客的公开发现页，因此它比好友页更严格：只收录明确设为公开的内容。
 function isVisibleInFun(item) { return normalizeVisibility(item && item.visibility) === 'public'; }
 
 // 首次打开时创建空数据；后续的 migration 用于把旧版本演示数据平滑迁移到新结构。
@@ -130,8 +136,7 @@ function normalizeImages(images, fallbackImage) {
   if (!normalized.length && fallbackImage) normalized.push(fallbackImage);
   return normalized;
 }
-function decorate(kind, item) {
-  const f = favorites();
+function decorate(kind, item, f = favorites()) {
   const favorite = !!(f[kind] && f[kind][item.id]);
   // 老版本已经点过赞的内容没有 likes 字段时，先按当前这一次点赞显示为 1。
   const visibility = normalizeVisibility(item.visibility);
@@ -146,6 +151,7 @@ function updateContentMetrics(kind, id, changes) {
   const index = items.findIndex(item => item.id === id);
   if (index < 0) return null;
   const current = items[index];
+  if (!changes.views && !changes.likes) return clone(current);
   const next = Object.assign({}, current, {
     views: Math.max(0, metric(current.views) + metric(changes.views)),
     likes: Math.max(0, metric(current.likes) + Number(changes.likes || 0))
@@ -169,7 +175,7 @@ function recordContentView(kind, id, ownerUid) {
   return result;
 }
 function camps() { return clone(source.camps); }
-function getCamp(id) { return camps().find(item => item.id === id); }
+function getCamp(id) { const camp = source.camps.find(item => item.id === id); return camp ? clone(camp) : undefined; }
 function getCampName(id) { const camp = getCamp(id); return camp ? camp.name : '未关联营地'; }
 function getSubcamp(campId, stageId, subcampId) { const camp = getCamp(campId); return camp && camp.subcamps.find(item => item.id === subcampId && (!stageId || item.stageId === stageId)); }
 function contextTitle(context) {
@@ -181,12 +187,21 @@ function contextTitle(context) {
   const stage = (camp.stages || []).find(item => item.id === context.stageId);
   return stage ? `${camp.name} · ${stage.name}` : camp.name;
 }
-// context 是营地/阶段/子营地的筛选条件；不传则返回全部内容。
-function getPhotos(context = {}) {
-  init();
-  return read(KEYS.photos, []).filter(item => (!context.campId || item.campId === context.campId) && (!context.stageId || item.stageId === context.stageId) && (!context.subcampId || item.subcampId === context.subcampId) && matchesActivity(item, context)).map(item => decorate('photo', item));
+// 记录和作品会在对应营地内显示早期没有阶段字段的内容。
+function matchesJourney(item, context, includeLegacy = false) {
+  return (!context.campId || item.campId === context.campId) &&
+    (!context.stageId || item.stageId === context.stageId || includeLegacy && !item.stageId) &&
+    (!context.subcampId || item.subcampId === context.subcampId || includeLegacy && !item.subcampId) &&
+    matchesActivity(item, context);
 }
-function getPhoto(id) { return getPhotos({}).find(item => item.id === id); }
+function getPhotos(context = {}) {
+  const liked = favorites();
+  return read(KEYS.photos, []).filter(item => (!context.folderId || item.folderId === context.folderId) && matchesJourney(item, context)).map(item => decorate('photo', item, liked));
+}
+function getPhoto(id) {
+  const item = read(KEYS.photos, []).find(value => value.id === id);
+  return item ? decorate('photo', item) : undefined;
+}
 // 评论以“内容类型 + 内容 ID”关联到照片、记录或作品。
 function getComments(targetType, targetId) {
   init();
@@ -250,18 +265,30 @@ function deleteCommentsForTarget(targetType, targetId) {
 function decorateCompanion(item) { const visibility = normalizeVisibility(item.visibility); return Object.assign({}, item, { visibility, visibilityLabel: visibilityLabel(visibility) }); }
 function getCompanions(context = {}) {
   init();
-  return read(KEYS.companions, []).filter(item => (!context.campId || item.campId === context.campId) && (!context.stageId || item.stageId === context.stageId) && (!context.subcampId || item.subcampId === context.subcampId) && matchesActivity(item, context)).map(decorateCompanion);
+  return read(KEYS.companions, []).filter(item => matchesJourney(item, context)).map(decorateCompanion);
 }
 function getCompanion(id) { init(); const item = read(KEYS.companions, []).find(value => value.id === id); return item ? decorateCompanion(item) : null; }
 // 记录也可按营地、阶段和子营地读取。旧记录没有阶段信息时，会继续显示在对应营地下，避免迁移后旧内容“消失”。
-function getGrowth(context = {}) {
-  init();
-  return read(KEYS.growth, []).filter(item => (!context.campId || item.campId === context.campId) && (!context.stageId || !item.stageId || item.stageId === context.stageId) && (!context.subcampId || !item.subcampId || item.subcampId === context.subcampId) && matchesActivity(item, context)).map(item => {
-    const images = normalizeImages(item.images, item.image);
-    return decorate('growth', Object.assign({}, item, { images, image: images[0] || '' }));
-  }).sort((a, b) => b.date.localeCompare(a.date));
+function decorateGrowth(item, liked) {
+  const images = normalizeImages(item.images, item.image);
+  return decorate('growth', Object.assign({}, item, { images, image: images[0] || '' }), liked);
 }
-function getGrowthById(id) { return getGrowth().find(item => item.id === id); }
+function getGrowth(context = {}) {
+  const liked = favorites();
+  return read(KEYS.growth, []).filter(item => matchesJourney(item, context, true)).map(item => decorateGrowth(item, liked)).sort((a, b) => b.date.localeCompare(a.date));
+}
+function latestContentById(items, id) {
+  let match;
+  for (const item of items) {
+    if (item.id === id && (!match || String(item.date || '').localeCompare(String(match.date || '')) > 0)) match = item;
+  }
+  return match;
+}
+function getGrowthById(id) {
+  const liked = favorites();
+  const item = latestContentById(read(KEYS.growth, []), id);
+  return item ? decorateGrowth(item, liked) : undefined;
+}
 // 个人资料包含固定 UID；UID 只在首次创建资料时生成一次。
 function getProfile() { init(); return clone(read(KEYS.profile, Object.assign({}, source.profile, { uid: createUid() }))); }
 // 云端资料由 OpenID 定位；只回写本地缓存，避免把旧缓存重新上传并覆盖后台调整。
@@ -337,14 +364,16 @@ async function hydrateOwnCloudState() {
   const localActivities = read(KEYS.activities, []);
   const localFolders = read(KEYS.folders, []);
   const remoteCount = (remote.photos || []).length + (remote.growth || []).length + (remote.works || []).length + (remote.companions || []).length + (remote.activities || []).length + (remote.albums || []).length;
-  const localCount = localPhotos.length + localGrowth.length + localWorks.length + localCompanions.length + localActivities.length + localFolders.length;
-  if (!remoteCount && localCount) {
+  const legacyContentCount = localPhotos.length + localGrowth.length + localWorks.length + localCompanions.length;
+  const uid = String(remote.profile.uid || '');
+  // 只对首次接云、确有旧内容的账号做整批迁移。单独留在缓存里的空目录不能在每次编译后重新上传。
+  if (!remoteCount && legacyContentCount && read(KEYS.cloudStateHydratedUid, '') !== uid) {
     localPhotos.forEach(item => mirrorContent('photo', item));
     localGrowth.forEach(item => mirrorContent('growth', item));
     localWorks.forEach(item => mirrorContent('work', item));
     localCompanions.forEach(item => mirrorContent('companion', item));
     localActivities.forEach(item => mirrorContent('activity', item));
-    localFolders.forEach(item => mirrorContent('album', item));
+    localFolders.forEach(item => { rememberId(KEYS.pendingFolderSaves, item.id); mirrorContent('album', item); });
     cloud.saveProfile(getProfile());
     return false;
   }
@@ -357,10 +386,27 @@ async function hydrateOwnCloudState() {
   const remoteActivityIds = new Set((remote.activities || []).map(item => item.id));
   localActivities.filter(item => !remoteActivityIds.has(item.id)).forEach(item => mirrorContent('activity', item));
   write(KEYS.activities, mergedActivities);
-  const mergedAlbums = mergeById(localFolders, remote.albums || []);
-  const remoteAlbumIds = new Set((remote.albums || []).map(item => item.id));
-  localFolders.filter(item => !remoteAlbumIds.has(item.id)).forEach(item => mirrorContent('album', item));
+  const remoteAlbums = remote.albums || [];
+  const remoteAlbumIds = new Set(remoteAlbums.map(item => item.id));
+  const remoteAlbumById = remoteAlbums.reduce((items, item) => { items[item.id] = item; return items; }, {});
+  const pendingDeletes = new Set(storedIds(KEYS.pendingFolderDeletes));
+  const pendingSaves = new Set(storedIds(KEYS.pendingFolderSaves));
+  // 云端已有状态时以云端目录为准；只保留本机明确尚未同步成功的新建/编辑目录。
+  const unsyncedFolders = localFolders.filter(item => pendingSaves.has(item.id) && !pendingDeletes.has(item.id));
+  const matchesRemote = item => {
+    const saved = remoteAlbumById[item.id];
+    return !!saved && ['name', 'cover', 'campId', 'stageId', 'subcampId', 'activityName'].every(field => String(saved[field] || '') === String(item[field] || ''));
+  };
+  const stillPending = unsyncedFolders.filter(item => !matchesRemote(item));
+  const mergedAlbums = mergeById(remoteAlbums.filter(item => !pendingDeletes.has(item.id)), stillPending);
+  stillPending.forEach(item => mirrorContent('album', item));
+  write(KEYS.pendingFolderSaves, stillPending.map(item => item.id));
+  storedIds(KEYS.pendingFolderDeletes).forEach(id => {
+    if (remoteAlbumIds.has(id)) cloud.deleteContent('album', id);
+    else forgetId(KEYS.pendingFolderDeletes, id);
+  });
   write(KEYS.folders, mergedAlbums);
+  write(KEYS.cloudStateHydratedUid, uid);
   return true;
 }
 // 仅在资料仍为空、且用户从未处理过引导时，启动页才显示完善资料提示。
@@ -374,10 +420,14 @@ function shouldShowProfileGuide() {
 function markProfileGuideSeen() { write(KEYS.profileGuideSeen, true); }
 // 作品与记录使用同一套足迹上下文筛选规则，便于从同一阶段进入各自列表。
 function getWorks(context = {}) {
-  init();
-  return clone(read(KEYS.works, [])).filter(item => (!context.campId || item.campId === context.campId) && (!context.stageId || !item.stageId || item.stageId === context.stageId) && (!context.subcampId || !item.subcampId || item.subcampId === context.subcampId) && matchesActivity(item, context)).map(item => decorate('work', item)).sort((a, b) => b.date.localeCompare(a.date));
+  const liked = favorites();
+  return read(KEYS.works, []).filter(item => matchesJourney(item, context, true)).map(item => decorate('work', item, liked)).sort((a, b) => b.date.localeCompare(a.date));
 }
-function getWork(id) { return getWorks().find(item => item.id === id); }
+function getWork(id) {
+  const liked = favorites();
+  const item = latestContentById(read(KEYS.works, []), id);
+  return item ? decorate('work', item, liked) : undefined;
+}
 // 将小程序中统一使用的“2026.09.05”日期转换成可筛选的年月日信息。
 function rankingDate(date) {
   const match = String(date || '').match(/^(\d{4})[.\-/年](\d{1,2})[.\-/月](\d{1,2})/);
@@ -387,15 +437,15 @@ function rankingDate(date) {
   const day = Number(match[3]);
   return { year, month, day, timestamp: Date.UTC(year, month - 1, day) };
 }
-// “动态”热榜公式与云端一致：浏览 ×1 + 点赞 ×10 + 评论 ×5。
+// “趣闻”热榜公式与云端一致：浏览 ×1 + 点赞 ×10 + 评论 ×5。
 function contentHeat(item, comments) { return metric(item.views) + metric(item.likes) * 10 + metric(comments) * 5; }
 function rankingEntry(kind, item) {
   const dateInfo = rankingDate(item.date);
   const camp = getCamp(item.campId) || {};
   const isPhoto = kind === 'photo';
-  // 图片名称关闭时，排行榜也使用通用文案，避免在其他页面意外泄露名称。
-  const title = isPhoto ? (item.showName === true && item.name ? item.name : '相册中的一段记忆') : (item.title || (kind === 'growth' ? '未命名记录' : '未命名作品'));
-  const summary = isPhoto ? (camp.name || '相册中的一段记忆') : (item.body || item.fileName || camp.name || '一段成长记忆');
+  // 公开图片始终显示名称；相册卡片的名称开关只影响非公开图片。
+  const title = isPhoto ? (item.name || item.title || '未命名图片') : (item.title || (kind === 'growth' ? '未命名记录' : '未命名作品'));
+  const summary = isPhoto ? (item.hideUid || !getProfile().uid ? '' : `UID：${getProfile().uid}`) : (item.body || item.fileName || camp.name || '一段成长记忆');
   const comments = getComments(kind, item.id).length;
   return {
     id: item.id,
@@ -411,8 +461,7 @@ function rankingEntry(kind, item) {
     month: dateInfo.month,
     day: dateInfo.day,
     timestamp: dateInfo.timestamp,
-    // 本地演示模式同样保留可搜索字段；照片关闭名称显示时不把其名称放入索引。
-    searchText: [isPhoto && item.showName === true ? item.name : '', item.title, item.body, item.fileName, item.location, item.activityName, camp.name, item.campId, ...(Array.isArray(item.tags) ? item.tags : [])].join(' '),
+    searchText: [isPhoto ? item.name : '', item.title, item.body, item.fileName, item.location, item.activityName, camp.name, item.campId, ...(Array.isArray(item.tags) ? item.tags : [])].join(' '),
     views: metric(item.views),
     likes: metric(item.likes),
     comments,
@@ -421,7 +470,7 @@ function rankingEntry(kind, item) {
   };
 }
 function allRankingEntries() {
-  // 三个栏目统一转成同一结构；动态页仅展示用户明确选择“公开”的已发布内容。
+  // 三个栏目统一转成同一结构；趣闻仅展示用户明确选择“公开”的已发布内容。
   return getPhotos({}).filter(isVisibleInFun).map(item => rankingEntry('photo', item))
     .concat(getGrowth().filter(isVisibleInFun).map(item => rankingEntry('growth', item)))
     .concat(getWorks().filter(item => item.status !== 'draft' && isVisibleInFun(item)).map(item => rankingEntry('work', item)));
@@ -484,7 +533,7 @@ function deleteGrowth(id) {
   if (all.growth && Object.prototype.hasOwnProperty.call(all.growth, id)) { delete all.growth[id]; write(KEYS.favorites, all); }
   return Promise.all([deleteCommentsForTarget('growth', id), cloud.deleteContent('growth', id)]);
 }
-function saveWork(input) {
+function saveWork(input, localOnly = false) {
   init();
   const works = read(KEYS.works, []);
   const id = input.id || `work-${Date.now()}`;
@@ -496,7 +545,7 @@ function saveWork(input) {
   if (record.status === 'published' && index >= 0 && works[index].status === 'draft') record.publishedAt = Date.now();
   if (index >= 0) works.splice(index, 1, record); else works.push(record);
   write(KEYS.works, works);
-  mirrorContent('work', record);
+  if (!localOnly) mirrorContent('work', record);
   return decorate('work', record);
 }
 function deleteWork(id) {
@@ -520,7 +569,7 @@ function saveCompanion(input) {
   return clone(record);
 }
 function deleteCompanion(id) { init(); write(KEYS.companions, read(KEYS.companions, []).filter(item => item.id !== id)); return cloud.deleteContent('companion', id); }
-function savePhoto(input) {
+function savePhoto(input, localOnly = false) {
   init();
   const photos = read(KEYS.photos, []);
   const id = input.id || `photo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -533,8 +582,22 @@ function savePhoto(input) {
   record.title = record.name;
   if (index >= 0) photos.splice(index, 1, record); else photos.push(record);
   write(KEYS.photos, photos);
-  mirrorContent('photo', record);
+  if (!localOnly) mirrorContent('photo', record);
   return decorate('photo', record);
+}
+async function saveWorkAsync(input) {
+  const existing = input.id ? getWork(input.id) : null;
+  const item = Object.assign({ date: today(), visibility: 'friends', status: 'published' }, existing || {}, input, { id: input.id || `work-${Date.now()}-${Math.random().toString(36).slice(2, 8)}` });
+  const result = await cloud.upsertContent('work', item);
+  if (!result || result.error || !result.item) throw new Error(result && result.message || '作品未保存到云端，请重试');
+  return saveWork(result.item, true);
+}
+async function savePhotoAsync(input) {
+  const existing = input.id ? getPhoto(input.id) : null;
+  const item = Object.assign({ date: today(), visibility: 'friends', status: 'published' }, existing || {}, input, { id: input.id || `photo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}` });
+  const result = await cloud.upsertContent('photo', item);
+  if (!result || result.error || !result.item) throw new Error(result && result.message || '图片未保存到云端，请重试');
+  return savePhoto(result.item, true);
 }
 function deletePhoto(id) {
   init();
@@ -563,12 +626,12 @@ function albumContextKey(item) { return [item.campId || '', item.stageId || '', 
 // 上下文装入自动生成的“回忆集”，既满足新结构，也避免旧照片突然消失。
 function ensureLegacyAlbums(context = {}) {
   const photos = read(KEYS.photos, []);
-  const pending = photos.filter(item => !item.folderId && matchesAlbumContext(item, context));
+  const pending = photos.filter(item => item.image && !item.folderId && matchesAlbumContext(item, context));
   const folders = read(KEYS.folders, []);
   const folderIds = new Set(folders.map(item => item.id));
   // 旧云端照片可能保存了 folderId，但旧版没有同步相册资料；按原 folderId 恢复占位相册，
   // 能保留照片原有分组，名称则使用默认的“回忆集”。
-  const orphaned = photos.filter(item => item.folderId && !folderIds.has(item.folderId) && matchesAlbumContext(item, context));
+  const orphaned = photos.filter(item => item.image && item.folderId && !folderIds.has(item.folderId) && matchesAlbumContext(item, context));
   const orphanGroups = {};
   orphaned.forEach(item => { (orphanGroups[item.folderId] = orphanGroups[item.folderId] || []).push(item); });
   Object.keys(orphanGroups).forEach(folderId => {
@@ -576,6 +639,7 @@ function ensureLegacyAlbums(context = {}) {
     const folder = { id: folderId, name: '回忆集', cover: sample.image || '', campId: sample.campId || 'rural', stageId: sample.stageId || '', subcampId: sample.subcampId || '', activityName: normalizeActivityName(sample.activityName), date: sample.date || today(), autoCreated: true, visibility: 'self', status: 'published' };
     folders.push(folder);
     folderIds.add(folderId);
+    rememberId(KEYS.pendingFolderSaves, folder.id);
     mirrorContent('album', folder);
   });
   if (!pending.length) {
@@ -591,6 +655,7 @@ function ensureLegacyAlbums(context = {}) {
     if (!folder) {
       folder = { id: `folder-legacy-${Date.now()}-${index}`, name: '回忆集', cover: sample.image || '', campId: sample.campId || 'rural', stageId: sample.stageId || '', subcampId: sample.subcampId || '', activityName: normalizeActivityName(sample.activityName), date: sample.date || today(), autoCreated: true, visibility: 'self', status: 'published' };
       folders.push(folder);
+      rememberId(KEYS.pendingFolderSaves, folder.id);
       mirrorContent('album', folder);
     }
     groups[key].forEach(item => { assignments[item.id] = folder.id; });
@@ -602,12 +667,24 @@ function ensureLegacyAlbums(context = {}) {
 }
 function getFolders(context = {}) {
   init();
-  ensureLegacyAlbums(context);
   return clone(read(KEYS.folders, []).filter(item => matchesAlbumContext(item, context)));
 }
-// 判断一个营地/阶段是否已有伙伴或相册内容，用于足迹页面显示红色路径提示。
+// 红色路径提示只代表实际发布的内容；空相册目录不算内容。
+function getJourneyNotices(contexts) {
+  const ready = module.exports.isCloudSessionReady();
+  const companions = ready ? read(KEYS.companions, []) : [];
+  const photos = ready ? read(KEYS.photos, []) : [];
+  const growth = ready ? read(KEYS.growth, []) : [];
+  const works = ready ? read(KEYS.works, []) : [];
+  return contexts.map(context => ({
+    hasCompanions: companions.some(item => matchesJourney(item, context)),
+    hasAlbum: photos.some(item => matchesJourney(item, context)),
+    hasRecords: growth.some(item => matchesJourney(item, context, true)),
+    hasWorks: works.some(item => matchesJourney(item, context, true))
+  }));
+}
 function hasJourneyEdits(context = {}) {
-  return getCompanions(context).length > 0 || getPhotos(context).length > 0 || getFolders(context).length > 0 || getGrowth(context).length > 0 || getWorks(context).length > 0;
+  return Object.values(getJourneyNotices([context])[0]).some(Boolean);
 }
 function getFolder(id) { init(); const item = read(KEYS.folders, []).find(value => value.id === id); return item ? clone(Object.assign({}, item, { activityName: normalizeActivityName(item.activityName) })) : null; }
 function saveFolder(input) {
@@ -619,11 +696,15 @@ function saveFolder(input) {
   const index = folders.findIndex(item => item.id === id);
   if (index >= 0) folders.splice(index, 1, record); else folders.push(record);
   write(KEYS.folders, folders);
+  forgetId(KEYS.pendingFolderDeletes, id);
+  rememberId(KEYS.pendingFolderSaves, id);
   mirrorContent('album', record);
   return clone(record);
 }
 function deleteFolder(id) {
   init();
+  forgetId(KEYS.pendingFolderSaves, id);
+  rememberId(KEYS.pendingFolderDeletes, id);
   write(KEYS.folders, read(KEYS.folders, []).filter(item => item.id !== id));
   const photos = read(KEYS.photos, []).map(item => item.folderId === id ? Object.assign({}, item, { folderId: '' }) : item);
   write(KEYS.photos, photos);
@@ -802,7 +883,7 @@ function rejectFriendRequest(id) {
   return true;
 }
 
-// 下列异步方法供“动态”和“好友”页面使用。云函数部署后它们返回真实的跨账号数据；
+// 下列异步方法供“趣闻”和“好友”页面使用。云函数部署后它们返回真实的跨账号数据；
 // 本地演示或云函数不可用时，则保留原有的单机交互，方便继续开发页面样式。
 async function getHotRankingAsync(options = {}) {
   const result = await getHotRankingPageAsync(options);
@@ -898,4 +979,17 @@ async function getFavoriteItemsAsync(type) {
 function saveWorkDraft(id, value) { return saveWork(Object.assign({}, value, { id, status: 'draft' })); }
 function getWorkDrafts() { return getWorks().filter(item => item.status === 'draft'); }
 
-module.exports = { init, camps, getCamp, getCampName, getSubcamp, contextTitle, normalizeActivityName, visibilityOptions, visibilityLabel, isVisibleToFriend, getPhotos, getPhoto, savePhoto, deletePhoto, deletePhotos, movePhotos, getComments, saveComment, deleteComment, getFolders, getFolder, saveFolder, deleteFolder, getActivities, getActivity, saveActivity, deleteActivity, getActivitiesAsync, getCompanions, getCompanion, saveCompanion, deleteCompanion, hasJourneyEdits, getGrowth, getGrowthById, getProfile, applyCloudProfile, refreshCurrentProfileAsync, hasPendingProfile, saveProfile, saveProfileAsync, hydrateOwnCloudState, shouldShowProfileGuide, markProfileGuideSeen, getWorks, getWork, getHotRankingYears, getHotRanking, getHotRankingYearsAsync, getHotRankingAsync, getHotRankingPageAsync, toggleFavorite, recordContentView, saveGrowth, deleteGrowth, saveWork, deleteWork, getFriends, getFriend, getFriendsAsync, getFriendAsync, saveFriend, deleteFriend, deleteFriendAsync, getFriendRequests, getFriendRequestsAsync, createFriendRequest, createFriendRequestAsync, acceptFriendRequest, acceptFriendRequestAsync, rejectFriendRequest, rejectFriendRequestAsync, getFriendContentAsync, getFavoriteItems, getFavoriteItemsAsync, saveWorkDraft, getWorkDrafts, today };
+module.exports = { saveWorkAsync, savePhotoAsync, init, camps, getCamp, getCampName, getSubcamp, contextTitle, normalizeActivityName, visibilityOptions, visibilityLabel, isVisibleToFriend, getPhotos, getPhoto, savePhoto, deletePhoto, deletePhotos, movePhotos, getComments, saveComment, deleteComment, getFolders, getFolder, saveFolder, deleteFolder, getActivities, getActivity, saveActivity, deleteActivity, getActivitiesAsync, getCompanions, getCompanion, saveCompanion, deleteCompanion, hasJourneyEdits, getGrowth, getGrowthById, getProfile, applyCloudProfile, refreshCurrentProfileAsync, hasPendingProfile, saveProfile, saveProfileAsync, hydrateOwnCloudState, shouldShowProfileGuide, markProfileGuideSeen, getWorks, getWork, getHotRankingYears, getHotRanking, getHotRankingYearsAsync, getHotRankingAsync, getHotRankingPageAsync, toggleFavorite, recordContentView, saveGrowth, deleteGrowth, saveWork, deleteWork, getFriends, getFriend, getFriendsAsync, getFriendAsync, saveFriend, deleteFriend, deleteFriendAsync, getFriendRequests, getFriendRequestsAsync, createFriendRequest, createFriendRequestAsync, acceptFriendRequest, acceptFriendRequestAsync, rejectFriendRequest, rejectFriendRequestAsync, getFriendContentAsync, getFavoriteItems, getFavoriteItemsAsync, saveWorkDraft, getWorkDrafts, today };
+// 正式入口统一使用云端确认流程；旧本地函数仅供缓存兼容读取。
+Object.assign(module.exports, require('./content-sync').createSync({ cloud, keys: KEYS, init, today, normalizeActivityName, getProfile }));
+module.exports.getJourneyNotices = getJourneyNotices;
+// 首次连接完成前不展示尚未核对归属的旧账号缓存。
+['getPhotos', 'getGrowth', 'getWorks', 'getCompanions', 'getFolders', 'getActivities', 'getComments', 'getFriends', 'getFriendRequests', 'getWorkDrafts', 'getFavoriteItems'].forEach(name => {
+  const reader = module.exports[name];
+  module.exports[name] = (...args) => module.exports.isCloudSessionReady() ? reader(...args) : [];
+});
+['getPhoto', 'getWork', 'getGrowthById', 'getCompanion', 'getFolder', 'getActivity', 'getFriend'].forEach(name => {
+  const reader = module.exports[name];
+  module.exports[name] = (...args) => module.exports.isCloudSessionReady() ? reader(...args) : null;
+});
+module.exports.getProfile = () => module.exports.isCloudSessionReady() ? getProfile() : { uid: '', name: '', bio: '', avatar: '', tags: [], stats: { age: '', campCount: '' } };

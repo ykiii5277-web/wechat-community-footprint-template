@@ -3,14 +3,17 @@
   <view class="editor-card card">
     <view class="album-destination"><text>保存到相册</text><view>{{folderName}}</view></view>
     <view class="field-label">图片{{id ? '' : '（可一次多选）'}}</view>
+    <view class="muted">{{id ? '' : '单次可添加20张，可反复多选追加，当前已选 ' + images.length + ' 张。'}}</view>
     <view wx:if="{{images.length}}" class="album-image-grid">
-      <view wx:for="{{images}}" wx:key="*this" class="album-image-thumb"><image src="{{item}}" mode="aspectFill"></image><view wx:if="{{id}}" class="replace-image tap" bindtap="chooseImages">更换</view><view class="remove-image tap" data-index="{{index}}" catchtap="removeImage">×</view></view>
+      <view wx:for="{{images}}" wx:key="*this" class="album-image-thumb"><image src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="previewImage"></image><view wx:if="{{id}}" class="replace-image tap" bindtap="chooseImages">更换</view><view class="remove-image tap" data-index="{{index}}" catchtap="removeImage">×</view></view>
       <view wx:if="{{canAddImages && !id}}" class="album-image-add tap" bindtap="chooseImages"><view>＋</view><text>添加</text></view>
     </view>
     <view wx:else class="image-picker tap" bindtap="chooseImages"><view class="image-plus">＋</view><view>选择本地图片</view><view class="muted">可一次选择多张图片</view></view>
-    <view class="field-label">图片名称{{id ? '' : '（多选时作为名称前缀）'}}</view>
-    <input class="text-input" placeholder="给图片起个名字" maxlength="30" value="{{name}}" data-field="name" bindinput="input"/>
-    <view class="switch-row"><view><view class="field-label inline-label">显示图片名称</view><view class="muted">关闭后相册卡片不会显示名称</view></view><switch color="#1F513E" checked="{{showName}}" bindchange="nameVisible"/></view>
+    <view wx:if="{{images.length > 1}}" class="muted">点击图片查看大图，左右滑动切换图片。</view>
+    <view class="field-label">图片名称{{id ? '' : '（选填）'}}</view>
+    <input class="text-input" placeholder="留空默认以“相册名＋序号”的格式命名" maxlength="30" value="{{name}}" data-field="name" bindinput="input"/>
+    <view wx:if="{{!isPublic}}" class="switch-row"><view><view class="field-label inline-label">显示图片名称</view><view class="muted">关闭后相册卡片不会显示名称</view></view><switch color="#1F513E" checked="{{showName}}" bindchange="nameVisible"/></view>
+    <view wx:if="{{isPublic}}" class="visibility-hint">公开图片会显示图片名称；留空时由相册名和序号自动命名。</view>
     <view class="field-label">可见范围</view>
     <picker mode="selector" range="{{visibilityOptions}}" range-key="name" value="{{visibilityIndex}}" bindchange="visibilityChange"><view class="picker-field">{{visibilityName}} <text>›</text></view></picker>
     <view class="visibility-hint">{{visibilityHint}}</view>

@@ -5,7 +5,9 @@ const privacy = require('../../utils/privacy');
 
 Page({
   data: { id: '', name: '', originalName: '', cover: '', saving: false, deleting: false },
-  onLoad(options) {
+async onLoad(options) { await require('../../utils/actions').ready();
+    const draft = data.getSyncDraft(nav.decode(options.draftKey));
+    if (draft) return this.setData({ id: draft.id, name: draft.name, originalName: draft.originalName || draft.name, cover: draft.cover || '' });
     const id = nav.decode(options.id);
     if (!id) return;
     const activity = data.getActivity(id);
@@ -31,18 +33,22 @@ Page({
     if (data.getActivities().some(item => item.id !== this.data.id && item.name === name)) return wx.showToast({ title: '已存在同名活动', icon: 'none' });
     if (this.data.saving) return;
     this.setData({ saving: true });
+    this._saveId = this.data.id || this._saveId || data.newContentId('activity');
+    data.stageDraft('activity', { id: this._saveId, name, originalName: this.data.originalName, cover: this.data.cover });
     wx.showLoading({ title: '正在保存' });
     try {
       let cover = this.data.cover;
       if (cover && !cloud.isRemoteFile(cover)) cover = await cloud.persistFile(cover, 'activity-covers');
-      await data.saveActivity({ id: this.data.id || undefined, name, originalName: this.data.originalName, cover });
+      this.setData({ cover });
+      this._saveId = this.data.id || this._saveId || data.newContentId('activity');
+      await data.saveActivity({ id: this._saveId, name, originalName: this.data.originalName, cover });
       wx.hideLoading();
       wx.showToast({ title: this.data.id ? '活动已更新' : '活动已创建', icon: 'success' });
       setTimeout(() => wx.navigateBack({ delta: 1 }), 350);
     } catch (error) {
       wx.hideLoading();
       this.setData({ saving: false });
-      cloud.showUploadError(error, '活动封面保存失败');
+      cloud.showUploadError(error, '活动保存失败', () => this.save());
     }
   },
   remove() {

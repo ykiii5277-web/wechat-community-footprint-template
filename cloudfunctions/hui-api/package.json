@@ -1,9 +1,9 @@
 {
   "name": "hui-api",
-  "version": "1.0.0",
-  "description": "同行足迹模板的多用户数据与权限服务",
+  "version": "1.1.0",
+  "description": "同行足迹模板的多用户数据、作品审核与权限服务",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "latest"
+    "wx-server-sdk": "4.0.2"
   }
 }

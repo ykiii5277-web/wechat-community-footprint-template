@@ -9,16 +9,61 @@
         <view class="friend-identity-copy"><view class="friend-identity-name">{{friend.displayName}}</view><view class="friend-uid-chip">UID {{friend.uid || friend.id}}</view></view>
       </view>
       <view class="friend-identity-divider"></view>
-      <view class="friend-intro-stats"><view class="friend-intro-stats-icon">♧</view><view><view class="friend-intro-stats-title">{{friend.displayAge}}年成长 · {{friend.displayCampCount}}段活动经历</view><view class="friend-intro-stats-copy">在一次次同行中，记录成长与改变。</view></view></view>
+      <view class="friend-intro-stats"><view class="friend-intro-stats-icon">♧</view><view><view class="friend-intro-stats-title">{{friend.displayAge}}年同行年限 · {{friend.displayCampCount}}段社群经历</view><view class="friend-intro-stats-copy">在乡村、城市之间，用行动传递温暖与希望。</view></view></view>
     </view>
     <view class="friend-intro-info card"><view class="friend-intro-heading"><view class="friend-intro-icon">✦</view><view><view class="friend-intro-title">个人简介</view><view class="friend-intro-subtitle">想分享的自己与正在做的事</view></view></view><view class="friend-intro-bio {{friend.bio ? '' : 'is-empty'}}">{{friend.bio || '对方暂未填写个人简介。'}}</view></view>
     <view class="friend-intro-info card"><view class="friend-intro-heading"><view class="friend-intro-icon gold">#</view><view><view class="friend-intro-title">我的标签</view><view class="friend-intro-subtitle">记录那些让我成为我的关键词</view></view></view><view wx:if="{{friend.tags.length}}" class="friend-intro-tags"><text wx:for="{{friend.tags}}" wx:key="*this">{{item}}</text></view><view wx:else class="friend-intro-empty">对方暂未添加标签。</view></view>
   </block>
 
   <block wx:elif="{{type === 'footprints'}}">
-    <view class="friend-footprint-guide">点击活动图标，继续选择参与阶段或服务阶段，再查看伙伴、相册、记录和作品。</view>
-    <view wx:if="{{camps.length}}" class="friend-camps"><view wx:for="{{camps}}" wx:key="id" class="friend-camp card tap" data-id="{{item.id}}" bindtap="openCamp"><scene-banner scene="{{item.scene}}" compact="{{true}}"></scene-banner><view wx:if="{{item.hasContent}}" class="camp-content-notice">!</view><view class="friend-camp-copy"><view>{{item.name}}</view><text>点击进入这段活动足迹</text><view class="friend-camp-arrow">›</view></view></view></view>
-    <view wx:if="{{!camps.length}}" class="empty">对方暂未开放活动足迹。</view>
+    <view class="friend-footprint-guide">点击营地图标，继续选择参与阶段或服务阶段，再查看伙伴、相册、记录和作品。</view>
+    <view wx:if="{{camps.length}}" class="friend-camps"><view wx:for="{{camps}}" wx:key="id" class="friend-camp card tap" data-id="{{item.id}}" bindtap="openCamp"><scene-banner scene="{{item.scene}}" compact="{{true}}"></scene-banner><view wx:if="{{item.hasContent}}" class="camp-content-notice">!</view><view class="friend-camp-copy"><view>{{item.name}}</view><text>点击进入这段营地足迹</text><view class="friend-camp-arrow">›</view></view></view></view>
+    <view wx:if="{{!camps.length}}" class="empty">对方暂未开放营地足迹。</view>
+  </block>
+
+  <block wx:elif="{{type === 'module' && kind === 'companion'}}">
+    <view class="companions-top"><view class="section-label">一起成长的伙伴</view></view>
+    <view wx:if="{{records.length}}" class="people-grid">
+      <view wx:for="{{records}}" wx:key="id" class="person-card card tap" data-id="{{item.id}}" data-kind="{{item.kind}}" data-owner-uid="{{item.ownerUid}}" data-record-id="{{item.recordId}}" bindtap="openContent">
+        <view class="avatar avatar-{{index % 4}}">
+          <image wx:if="{{item.avatar && !item.imageFailed}}" class="avatar-image" lazy-load="{{true}}" src="{{item.avatar}}" mode="aspectFill" style="transform: translate({{item.avatarOffsetX}}rpx, {{item.avatarOffsetY}}rpx) scale({{item.avatarScale}});" data-index="{{index}}" binderror="imageError"></image>
+          <block wx:else><view class="avatar-face"></view><view class="avatar-shirt"></view></block>
+        </view>
+        <view class="person-name">{{item.name || item.title || '未命名伙伴'}}</view>
+        <view wx:if="{{item.gender}}" class="person-gender">{{item.gender}}</view>
+        <view class="person-visibility">{{item.visibilityLabel}}</view>
+        <view wx:if="{{item.introduction}}" class="person-intro">{{item.introduction}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty">好友在这个时期暂未开放伙伴。</view>
+  </block>
+
+  <block wx:elif="{{type === 'module' && kind === 'photo'}}">
+    <view wx:if="{{albumName}}" class="current-album card">
+      <view><view class="current-name">{{albumName}}</view><view class="current-count">{{records.length}} 张可查看照片</view></view>
+    </view>
+    <view class="album-heading"><view class="section-label">相册照片</view></view>
+    <view wx:if="{{records.length}}" class="album-grid">
+      <view wx:for="{{records}}" wx:key="id" class="photo-card card tap {{index % 2 ? 'lower' : ''}}" data-id="{{item.id}}" data-kind="{{item.kind}}" data-owner-uid="{{item.ownerUid}}" data-record-id="{{item.recordId}}" bindtap="openContent">
+        <view class="photo-art">
+          <image wx:if="{{item.image && !item.imageFailed}}" lazy-load="{{true}}" src="{{item.image}}" mode="aspectFill" data-index="{{index}}" binderror="imageError"></image>
+          <scene-banner wx:else scene="{{item.campId === 'summer' ? 'school' : item.campId}}" compact="{{true}}"></scene-banner>
+        </view>
+        <view class="photo-copy">
+          <view wx:if="{{item.showName || item.visibility === 'public'}}" class="photo-title">{{item.name || item.title}}</view>
+          <view class="photo-meta">
+            <text class="photo-date">{{item.date}}</text>
+            <text class="photo-visibility visibility-{{item.visibility}}">{{item.visibilityLabel}}</text>
+            <view class="photo-stats">
+              <view class="photo-stat"><text class="stat-icon">👁</text><text class="stat-count">{{item.views || 0}}</text></view>
+              <view class="photo-stat"><text class="stat-icon">♥</text><text class="stat-count">{{item.likes || 0}}</text></view>
+            </view>
+          </view>
+        </view>
+        <view class="corner-star">♥ {{item.likes || 0}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty">好友在这个相册暂未开放照片。</view>
   </block>
 
   <block wx:elif="{{type === 'module'}}"><view wx:if="{{records.length}}" class="record-list"><view wx:for="{{records}}" wx:key="id" class="record-card card tap" data-id="{{item.id}}" data-kind="{{item.kind}}" data-owner-uid="{{item.ownerUid}}" data-record-id="{{item.recordId}}" bindtap="openContent"><image wx:if="{{item.image || item.avatar}}" class="friend-content-image" src="{{item.image || item.avatar}}" mode="aspectFill"></image><view class="record-label">{{item.contentLabel}} · {{item.visibilityLabel}}</view><view class="record-title">{{item.title || item.name || '一段足迹内容'}}</view><view class="record-date">{{item.date}}</view><view wx:if="{{item.body || item.introduction}}" class="record-body">{{item.body || item.introduction}}</view></view></view><view wx:else class="empty">这个时期暂未开放相关内容。</view></block>

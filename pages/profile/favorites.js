@@ -56,7 +56,7 @@ Page({
         return wx.showToast({ title: result && result.message ? result.message : '取消点赞失败', icon: 'none' });
       }
     } else {
-      data.toggleFavorite(selected.kind, selected.id);
+      try { await data.toggleFavorite(selected.kind, selected.id, selected.ownerUid); } catch (error) { return wx.showToast({ title: error.message, icon: 'none' }); }
     }
     this.setData({ items: this.data.items.filter(item => String(item.id) !== String(selected.id)) });
   }

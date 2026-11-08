@@ -1,6 +1,6 @@
 <view class="page-shell mailbox-page">
   <page-nav title="邮箱" subtitle="每一封邮件都承载记忆"></page-nav>
-  <view wx:if="{{mails.length}}" class="mail-list">
+  <view wx:if="{{mails.length}}" class="mail-list {{guideStep && guideStep.id === 'mailbox' ? 'feature-guide-focus' : ''}}">
     <view wx:for="{{mails}}" wx:key="id" class="mail-card card {{item.type === 'user_feedback' ? 'feedback-mail' : ''}}">
       <view class="mail-heading">
         <view>{{item.title}}<text wx:if="{{!item.readAt}}" class="unread-dot"></text></view>
@@ -19,7 +19,12 @@
       <view wx:if="{{item.type === 'user_feedback' && item.senderTags.length}}" class="feedback-tags">
         <text wx:for="{{item.senderTags}}" wx:key="*this">{{item}}</text>
       </view>
-      <view class="mail-body {{item.type === 'user_feedback' ? 'feedback-content' : ''}}">{{item.body}}</view>
+      <view wx:if="{{item.type === 'work_review' && item.reviewIntro}}" class="mail-body review-mail-body">
+        <view>{{item.reviewIntro}}</view>
+        <view class="review-mail-reason">不通过原因：<text class="review-reason-text">{{item.reviewReason}}</text></view>
+        <view wx:if="{{item.reviewAdvice}}">{{item.reviewAdvice}}</view>
+      </view>
+      <view wx:else class="mail-body {{item.type === 'user_feedback' ? 'feedback-content' : ''}} {{item.type === 'work_review' ? 'review-mail-body' : ''}}">{{item.body}}</view>
       <view wx:if="{{item.message}}" class="mail-message">“{{item.message}}”</view>
       <view wx:if="{{item.type === 'developer_reward' && item.expiresDate}}" class="mail-deadline">领取截止：{{item.expiresDate}} 23:59（北京时间）</view>
       <scroll-view wx:if="{{item.images.length}}" class="mail-images" scroll-x>
@@ -32,6 +37,7 @@
           <view wx:if="{{item.status === 'pending'}}" class="claim-button tap" data-id="{{item.id}}" bindtap="claim">领取</view>
           <view wx:elif="{{item.status === 'claimed'}}" class="claimed">已领取</view>
           <view wx:elif="{{item.type === 'user_feedback'}}" class="feedback-state">待处理</view>
+          <view wx:elif="{{item.type === 'work_review'}}" class="claimed">审核通知</view>
           <view wx:else class="claimed">已计入心意</view>
           <view class="mail-delete tap" data-id="{{item.id}}" catchtap="remove">删除</view>
         </view>
@@ -39,5 +45,6 @@
     </view>
   </view>
   <view wx:elif="{{loading}}" class="empty">正在收取邮件…</view>
-  <view wx:else class="empty">邮箱还是空的。<view>榜单奖励、开发者赠予和用户反馈会出现在这里。</view></view>
+  <view wx:else class="empty {{guideStep && guideStep.id === 'mailbox' ? 'feature-guide-focus' : ''}}">邮箱还是空的。<view>榜单奖励、开发者赠予、审核通知和用户反馈会出现在这里。</view></view>
 </view>
+<feature-guide-overlay wx:if="{{guideStep}}" step="{{guideStep}}" index="{{guideIndex}}" total="{{guideTotal}}"></feature-guide-overlay>

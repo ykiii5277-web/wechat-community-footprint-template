@@ -1,8 +1,9 @@
 const cloud = require('../../utils/cloud-service');
+const featureGuide = require('../../utils/feature-guide');
 
 Page({
   data: { mails: [], loading: true },
-  onShow() { this.refresh(); },
+  onShow() { this.refresh(); featureGuide.syncPage(this); },
   async refresh() {
     this.setData({ loading: true });
     const result = await cloud.getMailbox();
@@ -37,6 +38,6 @@ Page({
   },
   preview(e) {
     const mail = this.data.mails.find(item => item.id === e.currentTarget.dataset.id);
-    if (mail && mail.images && mail.images.length) wx.previewImage({ current: mail.images[Number(e.currentTarget.dataset.index) || 0], urls: mail.images });
+    if (mail && mail.images && mail.images.length) return require('../../utils/image-preview').open(mail.images, e.currentTarget.dataset.index);
   }
 });

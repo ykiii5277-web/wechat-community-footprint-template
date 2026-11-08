@@ -36,12 +36,13 @@
 .menu-card { display:flex; align-items:center; padding:23rpx; margin-bottom:19rpx; }
 .menu-icon { display:flex; align-items:center; justify-content:center; width:80rpx; height:80rpx; margin-right:21rpx; border-radius:50%; font-size:39rpx; }
 .intro-icon { color:#4F7457; background:#E7EEDB; }
+.guide-icon { color:#fff; background:linear-gradient(145deg,#4C997D,#77BA9A); font-size:33rpx; }
 .favorites-icon { color:#9A6A19; background:#F9EBCF; }
 .backpack-icon { color:#4D7190; background:#E6EEF3; }
 .task-icon { color:#4B7354; background:#E6F0E1; }
-.shop-icon { color:#A46917; background:#FFF0D2; }
 .mail-icon { color:#8A5F47; background:#F4E9E0; }
 .admin-icon { color:#FFF9EA; background:linear-gradient(145deg,#9B6C20,#D6A54A); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
+.review-icon { color:#A34337; background:#F8E7E2; font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
 .settings-icon { color:#F7FFFB; background:linear-gradient(145deg,#3D836D,#66AA92); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
 .developer-icon { color:#315E4A; background:linear-gradient(145deg,#E3EFE4,#F7EDD8); font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }
 .menu-copy { flex:1; color:#20362C; font-family:"Songti SC",SimSun,serif; font-size:31rpx; font-weight:700; }

@@ -35,7 +35,7 @@ function normalizeImageResult(result) {
   const paths = [];
   (source.tempFiles || []).forEach(file => {
     const path = typeof file === 'string' ? file : (file.tempFilePath || file.path || '');
-    if (path) paths.push({ tempFilePath: path, size: Number(file && file.size) || 0 });
+    if (path) paths.push(Object.assign({}, typeof file === 'object' ? file : {}, { tempFilePath: path, size: Number(file && file.size) || 0 }));
   });
   (source.tempFilePaths || []).forEach(path => {
     if (path && !paths.some(file => file.tempFilePath === path)) paths.push({ tempFilePath: path });
@@ -59,7 +59,9 @@ function showChooseImageError(error) {
 }
 
 function chooseMedia(options) {
-  const config = Object.assign({ count: 1, mediaType: ['image'], sourceType: ['album', 'camera'], sizeType: ['compressed'] }, options || {});
+  // 先取得原图，再由统一上传层决定是否压缩；否则小图也会被系统预先压缩，
+  // 上传层看到的大小已不是用户选择的原文件大小。
+  const config = Object.assign({ count: 1, mediaType: ['image'], sourceType: ['album', 'camera'], sizeType: ['original'] }, options || {});
   const success = config.success;
   const fail = config.fail;
   const complete = config.complete;
@@ -78,12 +80,16 @@ function chooseMedia(options) {
   authorize(() => {
     // 项目中的图片入口全部是纯图片选择。chooseImage 在 Windows 开发者工具、
     // 旧基础库和真机上的本地相册兼容性更好，返回值再统一成 chooseMedia 格式。
-    if (onlyImages && typeof wx.chooseImage === 'function') {
-      return wx.chooseImage({ count: config.count, sourceType: config.sourceType, sizeType: config.sizeType, success: onSuccess, fail: onFail });
+    if (onlyImages && !config.preferMedia && typeof wx.chooseImage === 'function') {
+      return wx.chooseImage({ count: Math.min(9, config.count), sourceType: config.sourceType, sizeType: config.sizeType, success: onSuccess, fail: onFail });
     }
     if (typeof wx.chooseMedia === 'function') {
-      return wx.chooseMedia({ count: config.count, mediaType: config.mediaType, sourceType: config.sourceType, sizeType: config.sizeType, maxDuration: config.maxDuration, camera: config.camera, success: onSuccess, fail: onFail });
+      return wx.chooseMedia({ count: config.count, mediaType: config.mediaType, sourceType: config.sourceType, sizeType: config.sizeType, maxDuration: config.maxDuration, camera: config.camera, success: onSuccess, fail: error => {
+        if (onlyImages && config.preferMedia && typeof wx.chooseImage === 'function' && /not support|unsupported|system|invalid|count/i.test(rawError(error)) && !isCancel(error)) return wx.chooseImage({ count: Math.min(9, config.count), sourceType: config.sourceType, sizeType: config.sizeType, success: onSuccess, fail: onFail });
+        onFail(error);
+      } });
     }
+    if (onlyImages && typeof wx.chooseImage === 'function') return wx.chooseImage({ count: Math.min(9, config.count), sourceType: config.sourceType, sizeType: config.sizeType, success: onSuccess, fail: onFail });
     onFail(new Error('chooseMedia:fail not supported'));
   });
 }

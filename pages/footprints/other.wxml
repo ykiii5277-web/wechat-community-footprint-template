@@ -1,17 +1,17 @@
 <view class="other-footprints-page">
   <view class="other-safe"></view>
-  <view class="other-page-header"><view class="other-back tap" bindtap="switchTab" data-path="/pages/footprints/index">‹</view><view class="other-page-title">更多活动</view><view class="other-page-placeholder"></view></view>
-  <view class="other-intro"><view class="intro-title">把每一次出发，都留在足迹里</view><view class="intro-note">冬令营、星火计划与更多值得记住的活动</view></view>
+  <view class="other-page-header"><view class="other-back tap" bindtap="switchTab" data-path="/pages/footprints/index">‹</view><view class="other-page-title">其他足迹</view><view class="other-page-placeholder"></view></view>
+  <view class="other-intro"><view class="intro-title">把每一次出发，都留在足迹里</view><view class="intro-note">主题活动、兴趣计划与更多值得记住的活动</view></view>
   <view class="other-map">
     <image class="other-map-image" src="/assets/images/other-footprints-watercolor-v1.jpg" mode="aspectFill"></image>
     <view class="map-mist mist-one"></view><view class="map-mist mist-two"></view>
-    <view class="other-stop stop-winter tap" data-id="winter" bindtap="openCamp"><view class="other-pin pin-winter"><text class="pin-symbol">❄</text></view><view class="other-label">冬令营<text>›</text></view></view>
-    <view class="other-stop stop-spark tap" data-id="spark" bindtap="openCamp"><view class="other-pin pin-spark"><text class="pin-symbol">✦</text></view><view class="other-label">星火计划<text>›</text></view></view>
+    <view class="other-stop stop-winter tap" data-id="winter" bindtap="openCamp"><view class="other-pin pin-winter"><text class="pin-symbol">❄</text></view><view class="other-label">主题活动<text>›</text></view></view>
+    <view class="other-stop stop-spark tap" data-id="spark" bindtap="openCamp"><view class="other-pin pin-spark"><text class="pin-symbol">✦</text></view><view class="other-label">兴趣计划<text>›</text></view></view>
     <view class="other-stop stop-other tap" data-id="other" bindtap="openCamp"><view class="other-pin pin-other"><text class="pin-symbol">♡</text></view><view class="other-label">其他活动<text>›</text></view></view>
   </view>
   <view class="other-tip">进入“其他活动”后，可为每个活动填写自己的名称；公开内容在榜单中仍归类为“其他活动”。</view>
   <view class="other-tabbar">
-    <view class="other-tab tap" data-path="/pages/fun/index" bindtap="switchTab"><image src="/assets/images/tab-fun-active-v2.png" mode="aspectFit"></image><view>动态</view></view>
+    <view class="other-tab tap" data-path="/pages/fun/index" bindtap="switchTab"><image src="/assets/images/tab-fun-active-v2.png" mode="aspectFit"></image><view>趣闻</view></view>
     <view class="other-tab selected tap" data-path="/pages/footprints/index" bindtap="switchTab"><image src="/assets/images/tab-footprints-v2.png" mode="aspectFit"></image><view>足迹</view></view>
     <view class="other-tab tap" data-path="/pages/friends/index" bindtap="switchTab"><image src="/assets/images/tab-friends-v2.png" mode="aspectFit"></image><view>好友</view></view>
     <view class="other-tab tap" data-path="/pages/profile/index" bindtap="switchTab"><image src="/assets/images/tab-profile-v2.png" mode="aspectFit"></image><view>我的</view></view>

@@ -1,0 +1,24 @@
+.photo-visibility{display:inline-block;flex-shrink:0;padding:2rpx 6rpx;border-radius:99rpx;color:#55735E;background:#EAF1E6;font-size:18rpx;white-space:nowrap}
+.photo-visibility.visibility-public{color:#947027;background:#FBF1DB}
+.photo-visibility.visibility-self{color:#7D867E;background:#EEF0EB}
+.current-album{display:flex;align-items:center;justify-content:space-between;padding:20rpx 22rpx}
+.current-name{color:#274F3C;font-size:29rpx;font-weight:700}
+.current-count{margin-top:4rpx;color:#819087;font-size:20rpx}
+.album-heading{display:flex;align-items:center;justify-content:space-between}
+.album-heading .section-label{flex:1}
+.album-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18rpx;align-items:start}
+.photo-card{position:relative;overflow:hidden}
+.photo-card.lower{margin-top:35rpx}
+.photo-art{position:relative;height:205rpx;overflow:hidden}
+.photo-art image{display:block;width:100%;height:100%}
+.photo-art scene-banner{display:block;height:100%}
+.photo-copy{min-height:46rpx;padding:12rpx 13rpx 14rpx}
+.photo-title{overflow:hidden;color:#20362C;font-size:25rpx;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+.photo-meta{display:flex;align-items:center;gap:8rpx;min-width:0;margin-top:6rpx;line-height:1.5}
+.photo-date{flex-shrink:0;color:#7C8B80;font-size:19rpx;white-space:nowrap}
+.photo-stats{display:flex;flex:1;align-items:center;gap:6rpx;min-width:0;color:#9A7763;font-size:18rpx;white-space:nowrap}
+.photo-stat{display:flex;align-items:center;gap:3rpx;min-width:0;flex:1}
+.stat-icon{flex-shrink:0;font-size:17rpx}
+.stat-count{overflow:hidden;min-width:0;text-overflow:ellipsis;white-space:nowrap}
+.corner-star,.multi-check{position:absolute;top:8rpx;right:10rpx}
+.corner-star{color:#FFF8E9;font-size:24rpx;text-shadow:0 1rpx 6rpx rgba(0,0,0,.25)}

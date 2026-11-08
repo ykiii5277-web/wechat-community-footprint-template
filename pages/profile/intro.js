@@ -1,6 +1,7 @@
 // 简介展示页：空资料用提示文案代替，方便用户知道从哪里开始填写。
 const data = require('../../utils/data');
 const nav = require('../../utils/nav');
+const featureGuide = require('../../utils/feature-guide');
 
 Page({
   data: { profile: null },
@@ -13,6 +14,7 @@ Page({
     this.setData({ profile });
   },
   async onShow() {
+    featureGuide.syncPage(this);
     this.renderProfile(data.getProfile());
     this.renderProfile(await data.refreshCurrentProfileAsync());
   },
